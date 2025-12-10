@@ -1,0 +1,73 @@
+#! /bin/sh
+
+set -e
+
+if [ -z "$1" ] || [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+   cat 1>&2 <<__END
+This helper script generates tunnel configuration section for the agent.
+It attempts to connect to the netxms instance and get fingerprint of the server certificate.
+If successfull - this certificate will be pinned to prevent MITM attacks.
+
+Generated configuration is printed on the stdout and everything else on stderr, so it's
+safe to redirect and append output directly to the agent's config file.
+
+Usage: 
+   nxagentd-generate-tunnel-config nx1.example.org # connect to nx1.example.org:4703
+
+   nxagentd-generate-tunnel-config nx1.example.org 5814 # connect to nx1.example.org:5814
+
+   nxagentd-generate-tunnel-config nx1.example.org >> /etc/nxagentd.conf # connect and append to config
+__END
+   exit 1
+fi
+
+_HOST=$1
+_PORT=4703
+if ! [ -z "$2" ]
+then
+   _PORT=$2
+fi
+
+echo "Trying to connect to $_HOST:$_PORT..." 1>&2
+
+_FINGERPRINT=`echo | openssl s_client -showcerts -connect $_HOST:$_PORT 2>/dev/null | openssl x509 -noout -fingerprint -sha256 2>/dev/null | grep Fingerprint= | cut -d= -f2`
+
+if [ -z "$_FINGERPRINT" ]
+then
+   cat 1>&2 <<__END
+
+Cannot get certificate fingerprint from $_HOST:$_PORT.
+Make sure that NetXMS is running, configured correctly, and accept connections.
+
+Certificate pinning is disabled.
+__END
+   _FINGERPRINT_PREFIX='# '
+   _FINGERPRINT=' # disabled!'
+else
+   cat 1>&2 <<__END
+
+Got server's certificate fingerprint.
+__END
+   _FINGERPRINT_PREFIX=''
+fi
+
+cat 1>&2 <<__END
+
+
+Add following section (or update existing) to agent's config (usually /etc/nxagentd.conf) and restart to apply:
+
+
+__END
+
+cat <<__END
+
+[ServerConnection/$_HOST]
+Hostname=$_HOST
+Port=$_PORT
+${_FINGERPRINT_PREFIX}ServerCertificateFingerprint=$_FINGERPRINT
+
+## If agent's certificate is externally provisioned, set certifiate location
+## Both certificate and private key should be in the same file, in PEM format (certificate first)
+# Certificate=/path/to/agent.pem # path to certificate + key
+# Password= # If private key is encrypted, optional
+__END

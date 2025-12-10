@@ -1,0 +1,177 @@
+-- **************************************************************************
+-- NETXMS-MIB - MIB file for NetXMS network management system
+--   
+-- Copyright (c) 2021-2023 Raden Solutions
+--   
+-- **************************************************************************
+
+NETXMS-MIB DEFINITIONS ::= BEGIN
+
+IMPORTS
+   MODULE-IDENTITY,
+   NOTIFICATION-TYPE,
+   OBJECT-TYPE
+      FROM SNMPv2-SMI
+   OBJECT-GROUP
+      FROM SNMPv2-CONF
+   TimeTicks
+      FROM RFC1155-SMI
+   DisplayString
+      FROM SNMPv2-TC
+   radenSolutions
+      FROM RADENSOLUTIONS-SMI;
+
+netxms MODULE-IDENTITY
+   LAST-UPDATED    "202309010000Z"
+   ORGANIZATION    "Raden Solutions SIA"
+   CONTACT-INFO
+      "Raden Solutions SIA
+
+      Postal: Antonijas 24-12A
+              Riga, LV-1010
+              Latvia
+
+      E-mail: snmp@radensolutions.com"
+   DESCRIPTION
+      "Enterprise specific traps and SNMP objects for NetXMS network management system."
+   REVISION "1"
+   DESCRIPTION
+      "Initial version of this MIB module."
+   REVISION "2"
+   DESCRIPTION
+      "Added access to collected DCI data."
+      ::= { radenSolutions 1 }
+
+nxEvent OBJECT-GROUP
+   OBJECTS { nxSourceNode, nxSeverity, nxMessage, nxTimestamp, nxAlarmKey, nxAdditionalData }
+   STATUS current
+   DESCRIPTION "NetXMS event (alert) object."
+      ::= { netxms 1 }
+
+nxSourceNode OBJECT-TYPE
+   SYNTAX DisplayString
+   MAX-ACCESS read-only
+   STATUS current
+   DESCRIPTION "Name of source node for this event."
+      ::= { nxEvent 1 }
+
+nxSeverity OBJECT-TYPE
+   SYNTAX INTEGER {
+      normal(0),
+      warning(1),
+      minor(2),
+      major(3),
+      critical(4)
+   }
+   MAX-ACCESS read-only
+   STATUS current
+   DESCRIPTION "Severity of this event. Possible values are:
+      0   Normal
+      1   Warning
+      2   Minor
+      3   Major
+      4   Critical"
+      ::= { nxEvent 2 }
+
+nxMessage OBJECT-TYPE
+   SYNTAX DisplayString
+   MAX-ACCESS read-only
+   STATUS current
+   DESCRIPTION "Message text for this event."
+      ::= { nxEvent 3 }
+
+nxTimestamp OBJECT-TYPE
+   SYNTAX TimeTicks
+   MAX-ACCESS read-only
+   STATUS current
+   DESCRIPTION "Timestamp for this event as UNIX time."
+      ::= { nxEvent 4 }
+
+nxAlarmKey OBJECT-TYPE
+   SYNTAX DisplayString
+   MAX-ACCESS read-only
+   STATUS current
+   DESCRIPTION "Alarm key that can be used to match events related to one alarm."
+      ::= { nxEvent 5 }
+
+nxAdditionalData OBJECT-TYPE
+   SYNTAX DisplayString
+   MAX-ACCESS read-only
+   STATUS current
+   DESCRIPTION "Additional data for this event."
+      ::= { nxEvent 6 }
+
+nxNotifications OBJECT IDENTIFIER ::= { netxms 0 }
+
+nxAlert NOTIFICATION-TYPE
+   OBJECTS { nxSourceNode, nxSeverity, nxMessage, nxTimestamp, nxAlarmKey, nxAdditionalData }
+   STATUS current
+   DESCRIPTION "Generic NetXMS notification generated from event."
+   ::= { nxNotifications 1 }
+
+nxServer OBJECT IDENTIFIER ::= { netxms 2 }
+
+nxNetworkObjects OBJECT IDENTIFIER ::= { nxServer 1 }
+
+nxNetworkObjectId OBJECT-TYPE
+   SYNTAX Integer32
+   MAX-ACCESS read-only
+   STATUS current
+   DESCRIPTION "ID of network object."
+      ::= { nxNetworkObjects 1 }
+
+nxDataCollection OBJECT IDENTIFIER ::= { nxServer 2 }
+
+nxDciId OBJECT-TYPE
+   SYNTAX Integer32
+   MAX-ACCESS read-only
+   STATUS current
+   DESCRIPTION "ID of data collection item (DCI)."
+      ::= { nxDataCollection 1 }
+
+nxDciValuesTable OBJECT-TYPE
+   SYNTAX SEQUENCE OF nxDciValuesEntry
+   MAX-ACCESS not-accessible
+   STATUS current
+   DESCRIPTION "This table provides access to last collected values of all DCIs."
+      ::= { nxDataCollection 2 }
+
+nxDciValuesEntry OBJECT-TYPE
+   SYNTAX NxDciValuesEntry
+   MAX-ACCESS not-accessible
+   STATUS current
+   DESCRIPTION "Last collected value of a DCI."
+   INDEX { nxNetworkObjectId, nxDciId }
+      ::= { nxDciValuesTable 1 }
+
+NxDciValuesEntry ::= SEQUENCE {
+   nxDciValue
+         OCTET STRING,
+   nxDciRawValue
+         OCTET STRING,
+   nxDciTimestamp
+         TimeTicks
+}
+
+nxDciValue OBJECT-TYPE
+   SYNTAX OCTET STRING
+   MAX-ACCESS read-only
+   STATUS current
+   DESCRIPTION "Last collected value of this DCI."
+      ::= { nxDciValuesEntry 1 }
+
+nxDciRawValue OBJECT-TYPE
+   SYNTAX OCTET STRING
+   MAX-ACCESS read-only
+   STATUS current
+   DESCRIPTION "Last collected raw value of this DCI."
+      ::= { nxDciValuesEntry 2 }
+
+nxDciTimestamp OBJECT-TYPE
+   SYNTAX TimeTicks
+   MAX-ACCESS read-only
+   STATUS current
+   DESCRIPTION "Time when value of this DCI was collected (as UNIX time)."
+      ::= { nxDciValuesEntry 3 }
+
+END

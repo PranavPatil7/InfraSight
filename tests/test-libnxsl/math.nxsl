@@ -1,0 +1,82 @@
+/* Math functions testing */
+import Math;
+
+x = -5;
+y = 22;
+assert(x + y == 17);
+assert(x - 1 == -6);
+assert(x * y == -110);
+assert(-y == -22);
+assert(y / 2 == 11);
+assert(y \ 3 == 7);
+assert(y % 3 == 1);
+assert((y / 0).toLowerCase() == "inf");
+assert((x / 0).toLowerCase() == "-inf");
+
+try
+{
+   z = x \ 0;
+}
+catch
+{
+   assert($errorcode == 9);
+}
+
+try
+{
+   z = x % 0;
+}
+catch
+{
+   assert($errorcode == 9);
+}
+
+assert(Pow(y, 2) == y * y);
+assert(Pow(y, 4) == y * y * y * y);
+assert(Pow(x, -1) == -0.2);
+
+assert(Pow10(3) == 1000);
+assert(Pow10(-3) == 0.001);
+
+assert(Abs(x) == 5);
+assert(Abs(y) == 22);
+
+assert(Log(1) == 0);
+assert(Ceil(Log(100)) == 5);
+
+assert(Log10(1) == 0);
+assert(Log10(100) == 2);
+
+assert(Round(0.2) == 0);
+assert(Round(0.7) == 1);
+assert(Round(1.4271, 2) == "1.43");
+assert(Round(1.4271, 3) == "1.427");
+
+assert(Floor(0.345) == 0);
+assert(Floor(0.7) == 0);
+
+assert(Ceil(0.0001) == 1);
+assert(Ceil(0.75) == 1);
+
+assert(Min(x, y, x * y, 1000, 254, -100000) == -100000);
+assert(Min([x, y, x * y, 1000, 254, -100000]) == -100000);
+assert(Min(x, y, [x * y, 1000], 254, -100000) == -100000);
+assert(Min([1, 2, 3, 10], 8) == 1);
+assert(Min([], 7, 8) == 7);
+assert(Max(x, y, x * y, 1000, 254, -100000) == 1000);
+assert(Max([x, y, x * y, 1000, 254, -100000]) == 1000);
+assert(Max([x, y], x * y, [1000, 254, -100000]) == 1000);
+assert(Max([1, 2, 3, 10], 8) == 10);
+assert(Max([], 7, 8) == 8);
+assert(Average(2, 2, [4, 4], 14) == 5.2);
+
+assert(Round(MeanAbsoluteDeviation([2, 2, 3, 4, 14]), 1) == "3.6");
+assert(Round(MeanAbsoluteDeviation([2, 2, 3, 4], 14), 1) == "3.6");
+assert(Round(MeanAbsoluteDeviation(2, 2, 3, 4, 14), 1) == "3.6");
+assert(StandardDeviation([2, 4, 4, 4, 5, 5, 7, 9]) == 2);
+assert(StandardDeviation(2, 4, [4, 4, 5, 5, 7], 9) == 2);
+assert(StandardDeviation(2, 4, 4, 4, 5, 5, 7, 9) == 2);
+
+assert((Round(Weierstrass(0.5, 7, 10), 4) .. "") == "1.9992");
+
+return 0;

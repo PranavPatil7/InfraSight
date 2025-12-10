@@ -1,0 +1,43 @@
+/*
+* This script requires:
+*     existing event id
+*     any existing node id
+*/
+nodeId = $1;
+parameterName = "Custom parameter";
+parameterValue = "Custom parameter value";
+node = FindObject(nodeId);
+
+assert(!PostEvent(node, 200000));
+
+assert(PostEvent(node, 100000));
+assert(PostEvent(node, 28, "my tag", "param1", "param2"));
+assert(PostEvent(node, "SYS_NODE_ADDED", null, "param1"));
+sleep(2000);//wait for alarm
+
+eventId = 0;
+alarm = null;
+alarms = node.alarms;
+for(a : alarms)
+{
+   if (a.eventCode == 28)
+   {
+      alarm = a;
+      eventId = a.eventId;
+      break;
+   }
+}
+assert(eventId != 0);
+
+event = LoadEvent(-1);
+assert(event == null);
+
+event = LoadEvent(eventId);
+assert(event != null);
+SetEventParameter(event, parameterName, parameterValue);
+value = GetEventParameter(event, parameterName);
+assert(value != parameterName);
+value = GetEventParameter(event, "Non existing");
+assert(value != parameterName);
+
+alarm.terminate();

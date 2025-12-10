@@ -1,0 +1,38 @@
+<configuration>
+   <if condition='isDefined("nxreportd.logfile")'>
+      <then>
+         <appender name="LOGFILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <file>${nxreportd.logfile}</file>
+            <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+               <fileNamePattern>${nxreportd.logfile}.%d{yyyy-MM-dd}</fileNamePattern>
+               <maxHistory>30</maxHistory>
+               <totalSizeCap>2GB</totalSizeCap>
+            </rollingPolicy>
+            <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+               <pattern>%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n</pattern>
+            </encoder>
+         </appender>
+         <logger name="org.apache.commons.digester" additivity="false">
+            <level value="INFO"/>
+            <appender-ref ref="LOGFILE"/>
+         </logger>
+         <root level="debug">
+            <appender-ref ref="LOGFILE"/>
+         </root>
+      </then>
+      <else>
+         <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+               <pattern>%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n</pattern>
+            </encoder>
+         </appender>
+         <logger name="org.apache.commons.digester" additivity="false">
+            <level value="INFO"/>
+            <appender-ref ref="CONSOLE"/>
+         </logger>
+         <root level="debug">
+            <appender-ref ref="CONSOLE"/>
+         </root>
+      </else>
+   </if>
+</configuration>

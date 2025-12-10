@@ -1,0 +1,49 @@
+#!/bin/bash
+#
+# vim:ts=3 sw=3
+
+trap '
+	rm -f tmp
+' INT EXIT
+
+if [ -x /usr/xpg4/bin/tail ]; then
+	TAIL="/usr/xpg4/bin/tail"
+else
+	TAIL="tail"
+fi
+
+hashTool="$4/bin/nxcsum"
+
+if [ "x"$3 = "x" ]; then
+	echo "Usage: $0 input.tar.gz scriptname output.sh"
+	exit
+fi
+
+if [ ! -r $1 ]; then
+	echo "Can't read $1"
+	exit
+fi
+
+stub=`dirname \`echo $0\``/stub.sh
+if [ ! -r $stub ]; then
+	echo "$stub not found!"
+	exit
+fi
+
+skip=`echo \`wc -l $stub|awk '{ print $1 }'\``
+
+if [ "x$BASH" == "x" ]; then
+	skip1=`let $skip+1`
+else
+	skip1=$skip
+	let skip1++
+fi
+
+sed "s,__SKIP__,$skip,g" < $stub |
+	sed "s,__SKIP1__,$skip1,g" |
+	sed "s,__COMMAND__,$2,g" > tmp
+hash1=`$TAIL -n +5 tmp | $hashTool md5 -`
+hash2=`$hashTool md5 $1`
+sed "s,__HASH1__,$hash1,g" < tmp | sed "s,__HASH2__,$hash2,g" > $3
+
+cat $1 >> $3

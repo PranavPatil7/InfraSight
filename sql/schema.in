@@ -1,0 +1,2930 @@
+/*
+** NetXMS Database Schema
+**
+** ex: syntax=sql ts=2 sw=2 expandtab
+*/
+
+/*
+** Metadata
+*/
+CREATE TABLE metadata
+(
+  var_name varchar(63) not null,
+  var_value varchar(255) not null,
+  PRIMARY KEY(var_name)
+) TABLE_TYPE;
+
+/*
+** System configuration table
+*/
+CREATE TABLE config
+(
+  var_name varchar(63) not null,
+  var_value varchar(2000) null,
+  default_value varchar(2000) null,
+#ifdef DB_ORACLE
+  is_visible integer default 1 not null,
+  need_server_restart integer default 0 not null,
+  data_type char(1) default 'S' not null,
+  is_public char(1) default 'N' not null,
+#else
+  is_visible integer not null default 1,
+  need_server_restart integer not null default 0,
+  data_type char(1) not null default 'S',
+  is_public char(1) not null default 'N',
+#endif
+  description varchar(450) null,
+  possible_values SQL_TEXT null,
+  units varchar(36),
+  PRIMARY KEY(var_name)
+) TABLE_TYPE;
+
+/*
+** System configuration data (for large data)
+*/
+CREATE TABLE config_clob
+(
+  var_name varchar(63) not null,
+  var_value SQL_TEXT null,
+  PRIMARY KEY(var_name)
+) TABLE_TYPE;
+
+/*
+** System configuration possible values
+*/
+CREATE TABLE config_values
+(
+	var_name varchar(63) not null,
+	var_value varchar(15) not null,
+	var_description varchar(255) null,
+	PRIMARY KEY(var_name,var_value)
+)	TABLE_TYPE;
+
+/**
+ * Users
+ */
+CREATE TABLE users
+(
+  id integer not null,
+  guid varchar(36) not null,
+  name varchar(63) not null,
+  password varchar(127) not null,
+  system_access SQL_INT64 not null,
+  flags integer not null,
+  ui_access_rules varchar(2000) null,
+  full_name varchar(127) null,
+  description varchar(255) null,
+  grace_logins integer not null,
+  auth_method integer not null,
+  cert_mapping_method integer not null,
+  cert_mapping_data SQL_TEXT null,
+  auth_failures integer not null,
+  last_passwd_change integer not null,
+  min_passwd_length integer not null,
+  disabled_until integer not null,
+  last_login integer not null,
+  password_history SQL_TEXT null,
+  email varchar(127) null,
+  phone_number varchar(63) null,
+  ldap_dn SQL_TEXT null,
+  ldap_unique_id varchar(64) null,
+  created integer not null,
+  PRIMARY KEY(id)
+) TABLE_TYPE;
+
+/**
+ * Persistent authentication tokens
+ */
+CREATE TABLE auth_tokens
+(
+  id integer not null,
+  user_id integer not null,
+  issuing_time integer not null,
+  expiration_time integer not null,
+  description varchar(127) null,
+  token_data char(64) not null,
+  PRIMARY KEY(id)
+) TABLE_TYPE;
+
+/**
+ * User groups
+ */
+CREATE TABLE user_groups
+(
+  id integer not null,
+  guid varchar(36) not null,
+  name varchar(63) not null,
+  system_access SQL_INT64 not null,
+  flags integer not null,
+  ui_access_rules varchar(2000) null,
+  description varchar(255),
+  ldap_dn SQL_TEXT null,
+  ldap_unique_id varchar(64) null,
+  created integer not null,
+  PRIMARY KEY(id)
+) TABLE_TYPE;
+
+/**
+ * Users to groups mapping
+ */
+CREATE TABLE user_group_members
+(
+  group_id integer not null,
+  user_id integer not null,
+  PRIMARY KEY(group_id,user_id)
+) TABLE_TYPE;
+
+/**
+ * User profiles
+ */
+CREATE TABLE user_profiles
+(
+  user_id integer not null,
+  var_name varchar(63) not null,
+  var_value SQL_TEXT not null,
+  PRIMARY KEY(user_id,var_name)
+) TABLE_TYPE;
+
+/**
+ * Custom attributes for user database objects
+ */
+CREATE TABLE userdb_custom_attributes
+(
+  object_id integer not null,
+  attr_name varchar(127) not null,
+  attr_value SQL_TEXT not null,
+  PRIMARY KEY(object_id,attr_name)
+) TABLE_TYPE;
+
+/**
+ * Common object properties 
+ */
+CREATE TABLE object_properties
+(
+  object_id integer not null,
+  guid varchar(36) not null,
+  name varchar(63) not null,
+  alias varchar(255) null,
+  flags integer not null,
+  state integer not null,
+  status integer not null,
+  is_deleted integer not null,
+  last_modified integer not null,
+  inherit_access_rights integer not null,
+  status_calc_alg integer not null,
+  status_prop_alg integer not null,
+  status_fixed_val integer not null,
+  status_shift integer not null,
+  status_translation varchar(8) not null,
+  status_single_threshold integer not null,
+  status_thresholds varchar(8) not null,
+  comments SQL_TEXT null,
+  comments_source SQL_TEXT null,
+  location_type integer not null,
+  latitude varchar(20),
+  longitude varchar(20),
+  location_accuracy integer not null,
+  location_timestamp integer not null,
+  map_image varchar(36) not null,
+  drilldown_object_id integer not null,
+  name_on_map varchar(63) null,
+  country varchar(63) null,
+  region varchar(63) null,
+  city varchar(63) null,
+  district varchar(63) null,
+  street_address varchar(255) null,
+  postcode varchar(31) null,
+  state_before_maint integer not null,
+  maint_event_id SQL_INT64 not null,
+  maint_initiator integer not null,
+  creation_time integer not null,
+  category integer not null,
+  asset_id integer not null,
+  PRIMARY KEY(object_id)
+) TABLE_TYPE;
+
+/**
+ * Object categories
+ */
+CREATE TABLE object_categories
+(
+  id integer not null,
+  name varchar(63) not null,
+  icon varchar(36) null,
+  map_image varchar(36) null,
+  PRIMARY KEY(id)
+) TABLE_TYPE;
+
+/**
+ * Object URLs
+ */
+CREATE TABLE object_urls
+(
+  object_id integer not null,
+  url_id integer not null,
+  url varchar(2000) null,
+  description varchar(2000) null,
+  PRIMARY KEY(object_id,url_id)
+) TABLE_TYPE;
+
+/*
+** Object custom attributes
+*/
+CREATE TABLE object_custom_attributes
+(
+  object_id integer not null,
+  attr_name varchar(127) not null,
+  attr_value SQL_TEXT null,
+  flags integer not null,
+  PRIMARY KEY(object_id,attr_name)
+) TABLE_TYPE;
+
+CREATE INDEX idx_ocattr_oid ON object_custom_attributes(object_id);
+
+/*
+** Zone objects
+*/
+CREATE TABLE zones
+(
+  id integer not null,    // Zone object ID
+  zone_guid integer not null, // Globally unique ID for zone
+  PRIMARY KEY(id)
+) TABLE_TYPE;
+
+
+/*
+** Zone proxy nodes objects
+*/
+CREATE TABLE zone_proxies
+(
+  object_id integer not null,    // Zone object ID
+  proxy_node integer not null,
+  PRIMARY KEY(object_id,proxy_node)
+) TABLE_TYPE;
+
+/**
+ * Mobile device objects
+ */
+CREATE TABLE mobile_devices
+(
+  id integer not null,
+  device_id varchar(64) not null,
+  vendor varchar(64) null,
+  model varchar(128) null,
+  serial_number varchar(64) null,
+  os_name varchar(32) null,
+  os_version varchar(64) null,
+  user_id varchar(64) null,
+  battery_level integer not null,
+  comm_protocol varchar(31) null,
+  speed varchar(20) not null,
+  direction integer not null,
+  altitude integer not null,
+  PRIMARY KEY(id)
+) TABLE_TYPE;
+
+/**
+ * Access point objects
+ */
+CREATE TABLE access_points
+(
+  id integer not null,
+  domain_id integer not null,
+  controller_id integer not null,
+  mac_address varchar(16) null,
+  vendor varchar(64) null,
+  model varchar(128) null,
+  serial_number varchar(64) null,
+  ap_state integer not null,
+  ap_index integer not null,
+  grace_period_start integer not null,
+  peer_node_id integer not null,
+  peer_if_id integer not null,
+  peer_proto integer not null,
+  down_since integer not null,
+  PRIMARY KEY(id)
+) TABLE_TYPE;
+
+/**
+ * Radio interfaces
+ */
+CREATE TABLE radios
+(
+  owner_id integer not null,
+  radio_index integer not null,
+  if_index integer not null,
+  name varchar(63) null,
+  bssid char(12) not null,
+  ssid varchar(32) null,
+  frequency integer not null,
+  band integer not null,
+  channel integer not null,
+  power_dbm integer not null,
+  power_mw integer not null,
+  PRIMARY KEY(owner_id,radio_index,bssid)
+) TABLE_TYPE;
+
+/**
+ * Rack objects
+ */
+CREATE TABLE racks
+(
+  id integer not null,
+  height integer not null,
+  top_bottom_num char(1) not null,
+  PRIMARY KEY(id)
+) TABLE_TYPE;
+
+/**
+ * Rack pasive elements
+ */
+CREATE TABLE rack_passive_elements
+(
+  id integer not null,
+  rack_id integer not null,
+  name varchar(255) null,
+  type integer not null,
+  position integer not null,
+  height integer not null,
+  orientation integer not null,
+  port_count integer not null, //only for patch pannel
+  image_front varchar(36) null,
+  image_rear varchar(36) null,
+  PRIMARY KEY(id)
+) TABLE_TYPE;
+
+/*
+** Rack pasive element's patch pannel ports inventory
+*/
+CREATE TABLE physical_links
+(
+  id integer not null,
+  description varchar(255) null,
+  left_object_id integer not null,
+  left_patch_pannel_id integer not null,
+  left_port_number integer not null,
+  left_front char(1) not null,
+  right_object_id integer not null,
+  right_patch_pannel_id integer not null,
+  right_port_number integer not null,
+  right_front char(1) not null,  
+  PRIMARY KEY(id)
+) TABLE_TYPE;
+
+/*
+** Chassis objects
+*/
+CREATE TABLE chassis
+(
+  id integer not null,
+  controller_id integer not null,
+  rack_id integer not null,
+  rack_image_front varchar(36) null,
+  rack_image_rear varchar(36) null,
+  rack_position integer not null,
+  rack_height integer not null,
+  rack_orientation integer not null,
+  PRIMARY KEY(id)
+) TABLE_TYPE;
+
+/**
+ * Nodes information
+ */
+CREATE TABLE nodes
+(
+  id integer not null,
+  primary_name varchar(255) null,
+  primary_ip varchar(48) not null,
+  tunnel_id varchar(36) null,
+  agent_cert_subject varchar(500) null,
+  agent_cert_mapping_method char(1) null,
+  agent_cert_mapping_data varchar(500) null,
+  snmp_version integer not null,
+  snmp_port integer not null,
+  community varchar(127) null,
+  usm_auth_password varchar(127) null,
+  usm_priv_password varchar(127) null,
+  usm_methods integer not null,
+  snmp_oid varchar(255) null,
+  snmp_engine_id varchar(255) null,
+  snmp_context_engine_id varchar(255) null,
+  secret varchar(88) null,
+  agent_port integer not null,
+  agent_version varchar(63) null,
+  agent_id varchar(36) null,
+  hardware_id varchar(40) null,
+  platform_name varchar(63) null,
+  poller_node_id integer not null,
+  zone_guid integer not null,
+  proxy_node integer not null,
+  snmp_proxy integer not null,
+  eip_proxy integer not null,
+  icmp_proxy integer not null,
+  required_polls integer not null,
+  uname varchar(255) null,
+  use_ifxtable integer not null,
+  snmp_sys_name varchar(127) null,
+  snmp_sys_contact varchar(127) null,
+  snmp_sys_location varchar(255) null,
+  bridge_base_addr varchar(15) null,
+  lldp_id varchar(255) null,
+  down_since integer not null,
+  boot_time integer not null,
+  driver_name varchar(32) null,
+  physical_container_id integer not null,
+  rack_image_front varchar(36) null,
+  rack_image_rear varchar(36) null,
+  rack_position integer not null,
+  rack_height integer not null,
+  rack_orientation integer not null,
+  agent_cache_mode char(1) not null,
+  last_agent_comm_time integer not null,
+  path_check_reason integer not null,
+  path_check_node_id integer not null,
+  path_check_iface_id integer not null,
+  syslog_msg_count SQL_INT64 not null,
+  snmp_trap_count SQL_INT64 not null,
+  node_type integer not null,
+  node_subtype varchar(127) null,
+  hypervisor_type varchar(31) null,
+  hypervisor_info varchar(255) null,
+  ssh_login varchar(63) null,
+  ssh_password varchar(63) null,
+  ssh_port integer not null,
+  ssh_key_id integer not null,
+  ssh_proxy integer not null,
+  vnc_password varchar(63) null,
+  vnc_port integer not null,
+  vnc_proxy integer not null,
+  port_rows integer not null,
+  port_numbering_scheme integer not null,
+  agent_comp_mode char(1) not null, // compression mode for agent
+  capabilities SQL_INT64 not null,
+  expected_capabilities SQL_INT64 not null,
+  fail_time_snmp integer not null,
+  fail_time_agent integer not null,
+  fail_time_ssh integer not null,
+  icmp_poll_mode char(1) not null,
+  chassis_placement_config varchar(2000) null,
+  vendor varchar(127) null,
+  product_name varchar(127) null,
+  product_version varchar(15) null,
+  product_code varchar(31) null,
+  serial_number varchar(31) null,
+  eip_port integer not null,
+  cip_device_type integer not null,
+  cip_status integer not null,
+  cip_state integer not null,
+  cip_vendor_code integer not null,
+  syslog_codepage varchar(15) null,
+  snmp_codepage varchar(15) null,
+  ospf_router_id varchar(15) null,
+  mqtt_proxy integer not null,
+  modbus_proxy integer not null,
+  modbus_tcp_port integer not null,
+  modbus_unit_id integer not null,
+  PRIMARY KEY(id)
+) TABLE_TYPE;
+
+/**
+ * IP addresses for ICMP poll
+ */
+CREATE TABLE icmp_target_address_list
+(
+  node_id integer not null,
+  ip_addr varchar(48) not null,
+  PRIMARY KEY(node_id,ip_addr)
+) TABLE_TYPE;
+
+/*
+** Node software inventory
+*/
+CREATE TABLE software_inventory
+(
+  node_id integer not null,
+  name varchar(127) not null,
+  version varchar(63) not null,
+  vendor varchar(63) null,
+  install_date integer not null,
+  url varchar(255) null,
+  description varchar(255) null,
+  uninstall_key varchar(255) null,
+  PRIMARY KEY(node_id,name,version)
+) TABLE_TYPE;
+
+/**
+ * Node hardware inventory
+ */
+CREATE TABLE hardware_inventory
+(
+  node_id integer not null,
+  category integer not null,
+  component_index integer not null,
+  hw_type varchar(47) null,
+  vendor varchar(127) null,
+  model varchar(127) null,
+  location varchar(63) null,
+  capacity SQL_INT64 null,
+  part_number varchar(63) null,
+  serial_number varchar(63) null,
+  description varchar(255) null,
+  PRIMARY KEY(node_id,category,component_index)
+) TABLE_TYPE;
+
+/**
+ * Node components (Entity MIB)
+ */
+CREATE TABLE node_components
+(
+  node_id integer not null,
+  component_index integer not null,
+  parent_index integer not null,
+  position integer not null,
+  component_class integer not null,
+  if_index integer not null,
+  name varchar(255) null,
+  description varchar(255) null,
+  model varchar(255) null,
+  serial_number varchar(63) null,
+  vendor varchar(63) null,
+  firmware varchar(127) null,
+  PRIMARY KEY(node_id,component_index)
+) TABLE_TYPE;
+
+/**
+ * OSPF areas
+ */
+CREATE TABLE ospf_areas
+(
+  node_id integer not null,
+  area_id varchar(15) not null,
+  PRIMARY KEY(node_id,area_id)
+) TABLE_TYPE;
+
+/**
+ * OSPF neighbors
+ */
+CREATE TABLE ospf_neighbors
+(
+  node_id integer not null,
+  router_id varchar(15) not null,
+  area_id varchar(15) null,
+  ip_address varchar(48) not null,
+  remote_node_id integer not null,
+  if_index integer not null,
+  is_virtual char(1) not null,
+  neighbor_state integer not null,
+  PRIMARY KEY(node_id,router_id,if_index,ip_address)
+) TABLE_TYPE;
+
+/**
+ * Clusters information
+ */
+CREATE TABLE clusters
+(
+  id integer not null,
+  cluster_type integer not null,
+  zone_guid integer not null,
+  PRIMARY KEY(id)
+) TABLE_TYPE;
+
+/*
+** Cluster members
+*/
+
+CREATE TABLE cluster_members
+(
+  cluster_id integer not null,
+  node_id integer not null,
+  PRIMARY KEY(cluster_id,node_id)
+) TABLE_TYPE;
+
+/*
+** Cluster interconnect subnets
+*/
+
+CREATE TABLE cluster_sync_subnets
+(
+  cluster_id integer not null,
+  subnet_addr varchar(48) not null,
+  subnet_mask integer not null,
+  PRIMARY KEY(cluster_id,subnet_addr)
+) TABLE_TYPE;
+
+/*
+** Cluster resources
+*/
+
+CREATE TABLE cluster_resources
+(
+  cluster_id integer not null,
+  resource_id integer not null,
+  resource_name varchar(255),
+  ip_addr varchar(48) not null,
+  current_owner integer not null,
+  PRIMARY KEY(cluster_id,resource_id)
+) TABLE_TYPE;
+
+/*
+** Subnets
+*/
+CREATE TABLE subnets
+(
+  id integer not null,
+  ip_addr varchar(48) not null,
+  ip_netmask integer not null,
+  zone_guid integer not null,
+  PRIMARY KEY(id)
+) TABLE_TYPE;
+
+/*
+** Nodes' interfaces
+*/
+CREATE TABLE interfaces
+(
+  id integer not null,
+  node_id integer not null,
+  parent_iface integer not null,
+  if_type integer not null,
+  if_index integer not null,
+  mtu integer not null,
+  speed SQL_INT64 not null,
+  max_speed SQL_INT64 not null,
+  bridge_port integer not null,
+  phy_chassis integer not null,
+  phy_module integer not null,
+  phy_pic integer not null, /* Physical Interface Card */
+  phy_port integer not null,
+  peer_node_id integer not null,
+  peer_if_id integer not null,
+  peer_proto integer not null,
+  peer_last_updated integer not null,
+  mac_addr varchar(16) null,
+  required_polls integer not null,
+  admin_state integer not null,
+  oper_state integer not null,
+  dot1x_pae_state integer not null,
+  dot1x_backend_state integer not null,
+  description varchar(255) null,
+  if_name varchar(255) null,
+  if_alias varchar(255) null,
+  iftable_suffix varchar(127) null,
+  last_known_oper_state integer not null,
+  last_known_admin_state integer not null,
+  ospf_area varchar(15) null,
+  ospf_if_type integer not null,
+  ospf_if_state integer not null,
+  stp_port_state integer not null,
+  state_before_maintenance varchar(2000) null,
+  PRIMARY KEY(id)
+) TABLE_TYPE;
+
+/**
+ * Interface VLANs
+ */
+CREATE TABLE interface_vlan_list
+(
+  iface_id integer not null,
+  vlan_id integer not null,
+  PRIMARY KEY(iface_id,vlan_id)
+) TABLE_TYPE;
+
+/**
+ * Interface IP addresses
+ */
+CREATE TABLE interface_address_list
+(
+  iface_id integer not null,
+  ip_addr varchar(48) not null,
+  ip_netmask integer not null,
+  PRIMARY KEY(iface_id,ip_addr)
+) TABLE_TYPE;
+
+/*
+** Network services
+*/
+
+CREATE TABLE network_services
+(
+  id integer not null,
+  node_id integer not null,
+  service_type integer not null,
+  ip_bind_addr varchar(48) not null,
+  ip_proto integer not null,
+  ip_port integer not null,
+  check_request SQL_TEXT null,
+  check_response SQL_TEXT null,
+  poller_node_id integer not null,
+  required_polls integer not null,
+  PRIMARY KEY(id)
+) TABLE_TYPE;
+
+/*
+** VPN connectors
+*/
+CREATE TABLE vpn_connectors
+(
+  id integer not null,
+  node_id integer not null,
+  peer_gateway integer not null,
+  PRIMARY KEY(id)
+) TABLE_TYPE;
+
+/*
+** VPN connector networks
+*/
+CREATE TABLE vpn_connector_networks
+(
+  vpn_id integer not null,
+  network_type integer not null,  // 0 == local, 1 == remote
+  ip_addr varchar(48) not null,
+  ip_netmask integer not null,
+  PRIMARY KEY(vpn_id,ip_addr)
+) TABLE_TYPE;
+
+/*
+** Container objects
+*/
+CREATE TABLE object_containers
+(
+  id integer not null,
+  object_class integer not null,
+  PRIMARY KEY(id)
+) TABLE_TYPE;
+
+/*
+** Condition objects
+*/
+CREATE TABLE conditions
+(
+  id integer not null,
+  activation_event integer not null,
+  deactivation_event integer not null,
+  source_object integer not null,
+  active_status integer not null,
+  inactive_status integer not null,
+  script SQL_TEXT not null,
+  PRIMARY KEY(id)
+) TABLE_TYPE;
+
+/*
+** DCI to condition mapping
+*/
+CREATE TABLE cond_dci_map
+(
+  condition_id integer not null,
+  sequence_number integer not null,
+  dci_id integer not null,
+  node_id integer not null,
+  dci_func integer not null,
+  num_polls integer not null,
+  PRIMARY KEY(condition_id,sequence_number)
+) TABLE_TYPE;
+
+/**
+ * Data collection templates
+ */
+CREATE TABLE templates
+(
+  id integer not null,
+  PRIMARY KEY(id)
+) TABLE_TYPE;
+
+/**
+ * Mapping hosts to templates
+ */
+CREATE TABLE dct_node_map
+(
+  template_id integer not null,
+  node_id integer not null,
+  PRIMARY KEY(template_id,node_id)
+) TABLE_TYPE;
+
+/**
+ * Nodes to subnets mapping
+ */
+CREATE TABLE nsmap
+(
+  subnet_id integer not null,
+  node_id integer not null,
+  PRIMARY KEY(subnet_id,node_id)
+) TABLE_TYPE;
+
+/**
+ * Container members
+ */
+CREATE TABLE container_members
+(
+  container_id integer not null,
+  object_id integer not null,
+  PRIMARY KEY(container_id,object_id)
+) TABLE_TYPE;
+
+/**
+ * ICMP statistics
+ */
+CREATE TABLE icmp_statistics
+(
+   object_id integer not null,
+   poll_target varchar(63) not null,
+   min_response_time integer not null,
+   max_response_time integer not null,
+   avg_response_time integer not null,
+   last_response_time integer not null,
+   packet_loss integer not null,
+   jitter integer not null,
+   sample_count integer not null,
+   raw_response_times SQL_TEXT null,
+   PRIMARY KEY(object_id,poll_target)
+) TABLE_TYPE;
+
+/**
+ * Objects' ACLs
+ */
+CREATE TABLE acl
+(
+  object_id integer not null,
+  user_id integer not null,
+  access_rights integer not null,
+  PRIMARY KEY(object_id,user_id)
+) TABLE_TYPE;
+
+/**
+ * Trusted objects - used for cross-object access and data collection
+ */
+CREATE TABLE trusted_objects
+(
+  object_id integer not null,
+  trusted_object_id integer not null,
+  PRIMARY KEY(object_id,trusted_object_id)
+) TABLE_TYPE;
+
+/**
+ * Data collection items
+ *
+ * If node_id != 0, it's an item bound to node, and template_id points to
+ * the template used for creating this item. In this case, template_id = 0
+ * means that item was created manually.
+ * If node_id = 0, it's a template item, and template_id points to a template
+ * this item belongs to.
+ * If both node_id and template_id is 0, it's an error.
+ */
+CREATE TABLE items
+(
+  item_id integer not null,
+  node_id integer not null,
+  template_id integer not null,
+  template_item_id integer not null,
+  guid varchar(36) not null,
+  name varchar(1023) null,
+  description varchar(255) null,
+  flags integer not null,
+  state_flags integer not null,
+  source integer not null,  // 0 for internal or 1 for native agent or 2 for SNMP
+  snmp_port integer not null,
+  snmp_version integer not null,
+  datatype integer not null,
+  transformed_datatype integer not null,
+  polling_schedule_type char(1) not null,
+  polling_interval integer not null,
+  polling_interval_src varchar(255) null,
+  retention_type char(1) not null,
+  retention_time integer not null,
+  retention_time_src varchar(255) null,
+  status integer not null,      // ACTIVE, DISABLED or NOT_SUPPORTED
+  snmp_raw_value_type integer not null,
+  delta_calculation integer not null,
+  transformation SQL_TEXT,         // Transformation script
+  instance varchar(1023) null,   // Free form text which can be used in events
+  system_tag varchar(63) null,   // System tag
+  user_tag varchar(63) null,     // User tag
+  resource_id integer not null,   // associated cluster resource ID
+  proxy_node integer not null,    // ID of proxy node (for SNMP and agent items)
+  multiplier integer not null, // kilo, mega, milli, etc.
+  units_name varchar(63) null, // units name 
+  perftab_settings SQL_TEXT null,     // Settings for displaying graph on performance tab
+  instd_method integer not null,
+  instd_data varchar(1023) null,
+  instd_filter SQL_TEXT null,
+  samples integer not null,
+  npe_name varchar(15) null,
+  comments SQL_TEXT null,
+  instance_retention_time integer not null,
+  grace_period_start integer not null,
+  related_object integer not null,
+  all_rearmed_event integer not null, // Event code to be generated when all thresholds are rearmed
+  thresholds_disable_end_time integer not null,
+  PRIMARY KEY(item_id)
+) TABLE_TYPE;
+
+CREATE INDEX idx_items_node_id ON items(node_id);
+
+/**
+ * Threshold checking rules
+ */
+CREATE TABLE thresholds
+(
+  threshold_id integer not null,
+  item_id integer not null,
+  sequence_number integer not null,
+  fire_value varchar(255) null,
+  rearm_value varchar(255) null,
+  last_checked_value varchar(255) null,
+  check_function integer not null,
+  check_operation integer not null,
+  sample_count integer not null,
+  script SQL_TEXT null,
+  event_code integer not null,
+  rearm_event_code integer not null,
+  repeat_interval integer not null,
+  current_state integer not null,
+  current_severity integer not null,
+  match_count integer not null,
+  last_event_timestamp integer not null,
+  last_event_message varchar(2000) null,
+  state_before_maint char(1) not null,
+  is_disabled char(1) not null,
+  PRIMARY KEY(threshold_id)
+) TABLE_TYPE;
+
+CREATE INDEX idx_thresholds_item_id ON thresholds(item_id);
+CREATE INDEX idx_thresholds_sequence ON thresholds(sequence_number);
+
+/*
+** Data collection tables
+*/
+CREATE TABLE dc_tables
+(
+  item_id integer not null,
+  node_id integer not null,
+  template_id integer not null,
+  template_item_id integer not null,
+  guid varchar(36) not null,
+  name varchar(1023) null,
+  description varchar(255) null,
+  flags integer not null,
+  state_flags integer not null,
+  source integer not null,  // 0 for internal or 1 for native agent or 2 for SNMP
+  snmp_port integer not null,
+  snmp_version integer not null,
+  polling_schedule_type char(1) not null,
+  polling_interval integer not null,
+  polling_interval_src varchar(255) null,
+  retention_type char(1) not null,
+  retention_time integer not null,
+  retention_time_src varchar(255) null,
+  status integer not null,      // ACTIVE, DISABLED or NOT_SUPPORTED
+  system_tag varchar(63) null,   // System tag
+  user_tag varchar(63) null,     // User tag
+  resource_id integer not null,   // associated cluster resource ID
+  proxy_node integer not null,    // ID of proxy node (for SNMP and agent items)
+  perftab_settings SQL_TEXT null,     // Settings for displaying graph on performance tab
+  transformation_script SQL_TEXT null,
+  comments SQL_TEXT null,
+  instance varchar(1023) null,
+  instd_method integer not null,
+  instd_data varchar(1023) null,
+  instd_filter SQL_TEXT null,
+  instance_retention_time integer not null,
+  grace_period_start integer not null,
+  related_object integer not null,
+  thresholds_disable_end_time integer not null,
+  PRIMARY KEY(item_id)
+) TABLE_TYPE;
+
+CREATE INDEX idx_dc_tables_node_id ON dc_tables(node_id);
+
+/*
+** Columns for data collection tables
+*/
+CREATE TABLE dc_table_columns
+(
+  table_id integer not null,
+  sequence_number integer not null,
+  column_name varchar(63) not null,
+  snmp_oid varchar(1023) null,    // SNMP OID for this column, valid only for SNMP tables
+  flags integer not null,
+  display_name varchar(255) null,
+  PRIMARY KEY(table_id,column_name)
+) TABLE_TYPE;
+
+/*
+** Table thresholds
+*/
+CREATE TABLE dct_thresholds
+(
+  id integer not null,
+  table_id integer not null,
+  sequence_number integer not null,
+  activation_event integer not null,
+  deactivation_event integer not null,
+  sample_count integer not null,
+  PRIMARY KEY(id)
+) TABLE_TYPE;
+
+/*
+** Table threshold conditions
+*/
+CREATE TABLE dct_threshold_conditions
+(
+  threshold_id integer not null,
+  group_id integer not null,
+  sequence_number integer not null,
+  column_name varchar(63) null,
+  check_operation integer not null,
+  check_value varchar(255) null,
+  PRIMARY KEY(threshold_id,group_id,sequence_number)
+) TABLE_TYPE;
+
+/*
+** Table threshold instances
+*/
+CREATE TABLE dct_threshold_instances
+(
+  threshold_id integer not null,
+  instance_id integer not null,
+  instance varchar(255) not null,
+  match_count integer not null,
+  is_active char(1) not null,
+  tt_row_number integer not null,
+  maint_copy char(1) not null,
+  PRIMARY KEY(threshold_id,instance_id)
+) TABLE_TYPE;
+
+/*
+** Schedules for DCIs
+*/
+CREATE TABLE dci_schedules
+(
+  item_id integer not null,
+  schedule_id integer not null,
+  schedule varchar(255) null,
+  PRIMARY KEY(item_id,schedule_id)
+) TABLE_TYPE;
+
+/*
+** Latest raw values for all data collection items
+*/
+CREATE TABLE raw_dci_values
+(
+  item_id integer not null,
+  raw_value varchar(255) null,
+  transformed_value varchar(255) null,
+  last_poll_time SQL_INT64 not null,
+  cache_timestamp SQL_INT64 not null,
+  anomaly_detected char(1) not null,
+  PRIMARY KEY(item_id)
+) TABLE_TYPE;
+
+#if !defined(DB_ORACLE) && !defined(DB_DB2) && !defined(DB_POSTGRESQL) && !defined(DB_TSDB)
+CREATE INDEX idx_raw_dci_values_item_id ON raw_dci_values(item_id);
+#endif
+
+/**
+ * DCI level access control
+ */
+CREATE TABLE dci_access
+(
+   dci_id integer not null,
+   user_id integer not null,
+   PRIMARY KEY(dci_id,user_id)
+) TABLE_TYPE;
+
+/**
+ * Collected DCI data
+ */
+#ifdef DB_TSDB
+
+CREATE TABLE idata_sc_default
+(
+   item_id integer not null,
+   idata_timestamp timestamptz not null,
+   idata_value varchar(255) null,
+   raw_value varchar(255) null,
+   PRIMARY KEY(item_id,idata_timestamp)
+) TABLE_TYPE;
+
+CREATE TABLE idata_sc_7
+(
+   item_id integer not null,
+   idata_timestamp timestamptz not null,
+   idata_value varchar(255) null,
+   raw_value varchar(255) null,
+   PRIMARY KEY(item_id,idata_timestamp)
+) TABLE_TYPE;
+
+CREATE TABLE idata_sc_30
+(
+   item_id integer not null,
+   idata_timestamp timestamptz not null,
+   idata_value varchar(255) null,
+   raw_value varchar(255) null,
+   PRIMARY KEY(item_id,idata_timestamp)
+) TABLE_TYPE;
+
+CREATE TABLE idata_sc_90
+(
+   item_id integer not null,
+   idata_timestamp timestamptz not null,
+   idata_value varchar(255) null,
+   raw_value varchar(255) null,
+   PRIMARY KEY(item_id,idata_timestamp)
+) TABLE_TYPE;
+
+CREATE TABLE idata_sc_180
+(
+   item_id integer not null,
+   idata_timestamp timestamptz not null,
+   idata_value varchar(255) null,
+   raw_value varchar(255) null,
+   PRIMARY KEY(item_id,idata_timestamp)
+) TABLE_TYPE;
+
+CREATE TABLE idata_sc_other
+(
+   item_id integer not null,
+   idata_timestamp timestamptz not null,
+   idata_value varchar(255) null,
+   raw_value varchar(255) null,
+   PRIMARY KEY(item_id,idata_timestamp)
+) TABLE_TYPE;
+
+SELECT create_hypertable('idata_sc_default', 'idata_timestamp', chunk_time_interval => interval '86400 seconds');
+SELECT create_hypertable('idata_sc_7', 'idata_timestamp', chunk_time_interval => interval '86400 seconds');
+SELECT create_hypertable('idata_sc_30', 'idata_timestamp', chunk_time_interval => interval '86400 seconds');
+SELECT create_hypertable('idata_sc_90', 'idata_timestamp', chunk_time_interval => interval '86400 seconds');
+SELECT create_hypertable('idata_sc_180', 'idata_timestamp', chunk_time_interval => interval '86400 seconds');
+SELECT create_hypertable('idata_sc_other', 'idata_timestamp', chunk_time_interval => interval '86400 seconds');
+
+CREATE VIEW idata AS
+   SELECT * FROM idata_sc_default
+   UNION ALL
+   SELECT * FROM idata_sc_7
+   UNION ALL
+   SELECT * FROM idata_sc_30
+   UNION ALL
+   SELECT * FROM idata_sc_90
+   UNION ALL
+   SELECT * FROM idata_sc_180
+   UNION ALL
+   SELECT * FROM idata_sc_other;
+
+#else
+
+CREATE TABLE idata
+(
+   item_id integer not null,
+   idata_timestamp SQL_INT64 not null,
+   idata_value varchar(255) null,
+   raw_value varchar(255) null,
+   PRIMARY KEY(item_id,idata_timestamp)
+) TABLE_TYPE;
+
+#endif
+
+/**
+ * Collected table DCI data
+ */
+#ifdef DB_TSDB
+
+CREATE TABLE tdata_sc_default
+(
+   item_id integer not null,
+   tdata_timestamp timestamptz not null,
+   tdata_value SQL_TEXT null,
+   PRIMARY KEY(item_id,tdata_timestamp)
+) TABLE_TYPE;
+
+CREATE TABLE tdata_sc_7
+(
+   item_id integer not null,
+   tdata_timestamp timestamptz not null,
+   tdata_value SQL_TEXT null,
+   PRIMARY KEY(item_id,tdata_timestamp)
+) TABLE_TYPE;
+
+CREATE TABLE tdata_sc_30
+(
+   item_id integer not null,
+   tdata_timestamp timestamptz not null,
+   tdata_value SQL_TEXT null,
+   PRIMARY KEY(item_id,tdata_timestamp)
+) TABLE_TYPE;
+
+CREATE TABLE tdata_sc_90
+(
+   item_id integer not null,
+   tdata_timestamp timestamptz not null,
+   tdata_value SQL_TEXT null,
+   PRIMARY KEY(item_id,tdata_timestamp)
+) TABLE_TYPE;
+
+CREATE TABLE tdata_sc_180
+(
+   item_id integer not null,
+   tdata_timestamp timestamptz not null,
+   tdata_value SQL_TEXT null,
+   PRIMARY KEY(item_id,tdata_timestamp)
+) TABLE_TYPE;
+
+CREATE TABLE tdata_sc_other
+(
+   item_id integer not null,
+   tdata_timestamp timestamptz not null,
+   tdata_value SQL_TEXT null,
+   PRIMARY KEY(item_id,tdata_timestamp)
+) TABLE_TYPE;
+
+SELECT create_hypertable('tdata_sc_default', 'tdata_timestamp', chunk_time_interval => interval '86400 seconds');
+SELECT create_hypertable('tdata_sc_7', 'tdata_timestamp', chunk_time_interval => interval '86400 seconds');
+SELECT create_hypertable('tdata_sc_30', 'tdata_timestamp', chunk_time_interval => interval '86400 seconds');
+SELECT create_hypertable('tdata_sc_90', 'tdata_timestamp', chunk_time_interval => interval '86400 seconds');
+SELECT create_hypertable('tdata_sc_180', 'tdata_timestamp', chunk_time_interval => interval '86400 seconds');
+SELECT create_hypertable('tdata_sc_other', 'tdata_timestamp', chunk_time_interval => interval '86400 seconds');
+
+CREATE VIEW tdata AS
+   SELECT * FROM tdata_sc_default
+   UNION ALL
+   SELECT * FROM tdata_sc_7
+   UNION ALL
+   SELECT * FROM tdata_sc_30
+   UNION ALL
+   SELECT * FROM tdata_sc_90
+   UNION ALL
+   SELECT * FROM tdata_sc_180
+   UNION ALL
+   SELECT * FROM tdata_sc_other;
+
+#else
+
+CREATE TABLE tdata
+(
+   item_id integer not null,
+   tdata_timestamp SQL_INT64 not null,
+   tdata_value SQL_TEXT null,
+   PRIMARY KEY(item_id,tdata_timestamp)
+) TABLE_TYPE;
+
+#endif
+
+/**
+ * Events configuration
+ */
+CREATE TABLE event_cfg
+(
+  event_code integer not null,
+  event_name varchar(63) not null,  // Short event name
+  guid varchar(36) not null,
+  severity integer not null,
+  flags integer not null,
+  message varchar(2000) null,   /* Message template */
+  description SQL_TEXT null,
+  tags varchar(2000) null,
+  PRIMARY KEY(event_code)
+) TABLE_TYPE;
+
+/*
+** Event log
+*/
+CREATE TABLE event_log
+(
+  event_id SQL_INT64 not null,
+  event_code integer not null,
+#ifdef DB_TSDB
+  event_timestamp timestamptz not null,
+#else
+  event_timestamp integer not null,
+#endif
+  origin integer not null,
+  origin_timestamp integer not null,
+  event_source integer not null,    /* Source object ID */
+  zone_uin integer not null,
+  dci_id integer not null,                /* ID of related DCI or 0 */
+  event_severity integer not null,
+  event_message varchar(2000) null,
+  event_tags varchar(2000) null,
+  root_event_id SQL_INT64 not null, /* Non-zero if current event correlates to some other event */
+  raw_data SQL_TEXT null, /* Raw event data in JSON format */
+#ifdef DB_TSDB
+  PRIMARY KEY(event_id,event_timestamp)
+#else
+  PRIMARY KEY(event_id)
+#endif
+) TABLE_TYPE;
+
+CREATE INDEX idx_event_log_event_timestamp ON event_log(event_timestamp);
+
+CREATE INDEX idx_event_log_source ON event_log(event_source);
+
+#if defined(DB_POSTGRESQL) || defined(DB_TSDB)
+CREATE INDEX idx_event_log_root_id ON event_log(root_event_id) WHERE root_event_id > 0;
+#elif defined(DB_ORACLE)
+CREATE INDEX idx_event_log_root_id ON event_log(zero_to_null(root_event_id));
+#else
+CREATE INDEX idx_event_log_root_id ON event_log(root_event_id);
+#endif
+
+#ifdef DB_TSDB
+SELECT create_hypertable('event_log', 'event_timestamp', chunk_time_interval => interval '86400 seconds');
+#endif
+
+/**
+ * Notification log
+ */
+CREATE TABLE notification_log
+(
+  id SQL_INT64 not null,
+#ifdef DB_TSDB
+  notification_timestamp timestamptz not null,
+#else
+  notification_timestamp integer not null,
+#endif
+  notification_channel varchar(63) not null,
+  recipient varchar(2000) null,
+  subject varchar(2000) null,
+  message varchar(2000) null,
+  event_code integer null,
+  event_id SQL_INT64 null,
+  rule_id varchar(36) null,
+  success char(1) not null,
+#ifdef DB_TSDB
+  PRIMARY KEY(id,notification_timestamp)
+#else
+  PRIMARY KEY(id)
+#endif
+) TABLE_TYPE;
+
+CREATE INDEX idx_notification_log_timestamp ON notification_log(notification_timestamp);
+
+#ifdef DB_TSDB
+SELECT create_hypertable('notification_log', 'notification_timestamp', chunk_time_interval => interval '86400 seconds');
+#endif
+
+/**
+ * Server action execution log
+ */
+CREATE TABLE server_action_execution_log
+(
+  id SQL_INT64 not null,
+#ifdef DB_TSDB
+  action_timestamp timestamptz not null,
+#else
+  action_timestamp integer not null,
+#endif
+  action_id integer not null,
+  action_name varchar(63) null,
+  channel_name varchar(63) null,
+  recipient varchar(2000) null,
+  subject varchar(2000) null,
+  action_data varchar(2000) null,
+  event_id SQL_INT64 not null,
+  event_code integer not null,
+  success char(1) not null,
+#ifdef DB_TSDB
+  PRIMARY KEY(id,action_timestamp)
+#else
+  PRIMARY KEY(id)
+#endif
+) TABLE_TYPE;
+
+CREATE INDEX idx_srv_action_log_timestamp ON server_action_execution_log(action_timestamp);
+
+#ifdef DB_TSDB
+SELECT create_hypertable('server_action_execution_log', 'action_timestamp', chunk_time_interval => interval '86400 seconds');
+#endif
+
+/**
+ * Actions on events
+ */
+CREATE TABLE actions
+(
+  action_id integer not null,
+  guid varchar(36) not null,
+  action_name varchar(63) not null,
+  action_type integer not null,
+  is_disabled integer not null,
+  // Field "rcpt_addr" holds e-mail address for e-mail actions,
+  // phone number for sms actions, and remote host address for
+  // remote execution actions
+  rcpt_addr varchar(255) null,
+  email_subject varchar(255) null,
+  // Field "action_data" holds message text for e-mail and sms actions,
+  // command line for external command execution actions, or
+  // action name with optional arguments for remote execution actions
+  action_data SQL_TEXT null,
+  channel_name varchar(63) null,
+  PRIMARY KEY(action_id)
+) TABLE_TYPE;
+
+/**
+ * Event processing policy
+ */
+CREATE TABLE event_policy
+(
+  rule_id integer not null,   // Rule number
+  rule_guid varchar(36) not null,
+  flags integer not null,
+  comments SQL_TEXT null,
+  filter_script SQL_TEXT null,
+  alarm_message varchar(2000) null,
+  alarm_impact varchar(1000) null,
+  alarm_severity integer not null,
+  alarm_key varchar(255) null,    // Alarm key (used for auto termination)
+  alarm_timeout integer not null, // Timeout before sending event
+  alarm_timeout_event integer not null,  // Event to be sent on timeout
+  downtime_tag varchar(15) null,
+  rca_script_name varchar(255) null,
+  action_script SQL_TEXT null,
+  ai_instructions SQL_TEXT null,
+  PRIMARY KEY(rule_id)
+) TABLE_TYPE;
+
+/**
+ * Event processing policy source objects
+ */
+CREATE TABLE policy_source_list
+(
+  rule_id integer not null,
+  object_id integer not null,
+  exclusion char(1) not null,
+  PRIMARY KEY(rule_id,object_id,exclusion)
+) TABLE_TYPE;
+
+/**
+ * Event processing policy events
+ */
+CREATE TABLE policy_event_list
+(
+  rule_id integer not null,
+  event_code integer not null,
+  PRIMARY KEY(rule_id,event_code)
+) TABLE_TYPE;
+
+/**
+ * Event processing policy time frame based filter
+ */
+CREATE TABLE policy_time_frame_list
+(
+  rule_id integer not null,
+  time_frame_id integer not null,
+  date_filter SQL_INT64 not null,
+  time_filter integer not null,
+  PRIMARY KEY(rule_id,time_frame_id)
+) TABLE_TYPE;
+
+/**
+ * Event processing policy actions
+ */
+CREATE TABLE policy_action_list
+(
+  record_id integer not null, 
+  rule_id integer not null,
+  action_id integer not null,
+  timer_delay varchar(127) null,
+  timer_key varchar(127) null,
+  blocking_timer_key varchar(127) null,
+  snooze_time varchar(127) null, 
+  active char(1) not null,
+  PRIMARY KEY(record_id,rule_id)
+) TABLE_TYPE;
+
+/**
+ * Event processing policy timer cancellation actions
+ */
+CREATE TABLE policy_timer_cancellation_list
+(
+  rule_id integer not null,
+  timer_key varchar(127) not null,
+  PRIMARY KEY(rule_id,timer_key)
+) TABLE_TYPE;
+
+/**
+ * Event processing policy persistent storage operations
+ */
+CREATE TABLE policy_pstorage_actions
+(
+  rule_id integer not null,
+  ps_key varchar(127) not null,
+  action char(1) not null,
+  value varchar(2000) null,
+  PRIMARY KEY(rule_id,ps_key,action)
+) TABLE_TYPE;
+
+/**
+ * Event processing policy custom attribute operations
+ */
+CREATE TABLE policy_cattr_actions
+(
+  rule_id integer not null,
+  attribute_name varchar(127) not null,
+  action char(1) not null,
+  value varchar(2000) null,
+  PRIMARY KEY(rule_id,attribute_name,action)
+) TABLE_TYPE;
+
+/*
+** Alarms
+*/
+CREATE TABLE alarms
+(
+  alarm_id integer not null,  // Unique alarm identifier
+  parent_alarm_id integer not null,
+  alarm_state integer not null,
+  hd_state integer not null,  // Help desk system state
+  hd_ref varchar(63) null,  // Help desk reference
+  creation_time integer not null,
+  last_change_time integer not null,
+  last_state_change_time integer not null,
+  rule_guid varchar(36) null,
+  rule_description varchar(255) null,
+  source_object_id integer not null,
+  zone_uin integer not null,
+  source_event_code integer not null,
+  source_event_id SQL_INT64 not null,
+  dci_id integer not null,
+  message varchar(2000) null,
+  original_severity integer not null,
+  current_severity integer not null,
+  repeat_count integer not null,
+  alarm_key varchar(255) null,       // Alarm key (used for auto acknowledgment)
+  ack_by integer not null,           // ID of user who acknowleged alarm
+  resolved_by integer not null,      // ID of user who resolved alarm
+  term_by integer not null,          // ID of user who terminated alarm
+  timeout integer not null,
+  timeout_event integer not null,
+  ack_timeout integer not null,
+  alarm_category_ids varchar(255) null,
+  event_tags varchar(2000) null,
+  rca_script_name varchar(255) null, // Name of root cause analysis script used during creation
+  impact varchar(1000) null,
+  PRIMARY KEY(alarm_id)
+) TABLE_TYPE;
+
+CREATE INDEX idx_alarms_source_object_id ON alarms(source_object_id);
+CREATE INDEX idx_alarms_last_change_time ON alarms(last_change_time);
+CREATE INDEX idx_alarms_alarm_state ON alarms(alarm_state);
+
+/*
+** Alarm notes
+*/
+CREATE TABLE alarm_notes
+(
+  note_id integer not null,
+  alarm_id integer not null,
+  change_time integer not null,
+  user_id integer not null, // Last edited by
+  note_text SQL_TEXT null,
+  PRIMARY KEY(note_id)
+) TABLE_TYPE;
+
+CREATE INDEX idx_alarm_notes_alarm_id ON alarm_notes(alarm_id);
+
+/*
+** Source events for alarms
+*/
+CREATE TABLE alarm_events
+(
+  alarm_id integer not null,
+  event_id SQL_INT64 not null,
+  event_code integer not null,
+  event_name varchar(63) null,
+  severity integer not null,
+  source_object_id integer not null,
+  event_timestamp integer not null,
+  message varchar(2000) null,
+  PRIMARY KEY(alarm_id,event_id)
+) TABLE_TYPE;
+
+CREATE INDEX idx_alarm_events_alarm_id ON alarm_events(alarm_id);
+
+/*
+** Alarm categories
+*/
+CREATE TABLE alarm_categories
+(
+  id integer not null,
+  name varchar(63) null,
+  descr varchar(255) null,
+  PRIMARY KEY(id)
+) TABLE_TYPE;
+
+/**
+ * Alarm category access control list
+ */
+CREATE TABLE alarm_category_acl
+(
+  category_id integer not null,
+  user_id integer not null,
+  PRIMARY KEY(category_id,user_id)
+) TABLE_TYPE;
+
+/**
+ * Alarm-category map
+ */
+CREATE TABLE alarm_category_map
+(
+  alarm_id integer not null,
+  category_id integer not null,
+  PRIMARY KEY(alarm_id,category_id)
+) TABLE_TYPE;
+
+/**
+ * Log of alarm state changes
+ */
+CREATE TABLE alarm_state_changes
+(
+   record_id SQL_INT64 not null,
+   alarm_id integer not null,
+   prev_state integer not null,
+   new_state integer not null,
+   change_time integer not null,
+   prev_state_duration integer not null,
+   change_by integer not null,   // ID of user who initiated state change
+   PRIMARY KEY(record_id)
+) TABLE_TYPE;
+
+CREATE INDEX idx_alarm_state_changes_by_id ON alarm_state_changes(alarm_id);
+
+/**
+ * SNMP trap configuration
+ */
+CREATE TABLE snmp_trap_cfg
+(
+  guid varchar(36) not null,
+  trap_id integer not null,
+  snmp_oid varchar(255),
+  event_code integer not null,
+  user_tag varchar(63),
+  description varchar(255),
+  transformation_script SQL_TEXT null,
+  PRIMARY KEY(trap_id)
+) TABLE_TYPE;
+
+/**
+ * SNMP trap parameters mapping
+ */
+CREATE TABLE snmp_trap_pmap
+(
+  trap_id integer not null,
+  parameter integer not null,
+  flags integer not null,
+  snmp_oid varchar(255) null,
+  description varchar(255) null,
+  PRIMARY KEY(trap_id,parameter)
+) TABLE_TYPE;
+
+/**
+ * Agent packages
+ */
+CREATE TABLE agent_pkg
+(
+  pkg_id integer not null,
+  pkg_type varchar(15) null,
+  pkg_name varchar(63) not null,
+  version varchar(31) null,
+  platform varchar(63) null,
+  pkg_file varchar(255) null,
+  command varchar(4000) null,
+  description varchar(255) null,
+  PRIMARY KEY(pkg_id)
+) TABLE_TYPE;
+
+/**
+ * Package deployment jobs
+ */
+CREATE TABLE package_deployment_jobs
+(
+  id integer not null,
+  pkg_id integer not null,
+  node_id integer not null,
+  user_id integer not null,
+  creation_time integer not null,
+  execution_time integer not null,
+  completion_time integer not null,
+  status integer not null,
+  failure_reason varchar(255) null,
+  PRIMARY KEY(id)
+) TABLE_TYPE;
+
+/**
+ * Package deployment log
+ */
+CREATE TABLE package_deployment_log
+(
+  job_id integer not null,
+#ifdef DB_TSDB
+  execution_time timestamptz not null,
+  completion_time timestamptz not null,
+#else
+  execution_time integer not null,
+  completion_time integer not null,
+#endif
+  node_id integer not null,
+  user_id integer not null,
+  status integer not null,
+  failure_reason varchar(255) null,
+  pkg_id integer not null,
+  pkg_type varchar(15) null,
+  pkg_name varchar(63) not null,
+  version varchar(31) null,
+  platform varchar(63) null,
+  pkg_file varchar(255) null,
+  command varchar(255) null,
+  description varchar(255) null,
+#ifdef DB_TSDB
+  PRIMARY KEY(job_id,execution_time)
+#else
+  PRIMARY KEY(job_id)
+#endif
+) TABLE_TYPE;
+
+CREATE INDEX idx_pkglog_exec_time ON package_deployment_log(execution_time);
+CREATE INDEX idx_pkglog_node ON package_deployment_log(node_id);
+
+#ifdef DB_TSDB
+SELECT create_hypertable('package_deployment_log', 'execution_time', chunk_time_interval => interval '86400 seconds');
+#endif
+
+/*
+** Object tools
+*/
+CREATE TABLE object_tools
+(
+  tool_id integer not null,
+  guid varchar(36) not null,
+  tool_name varchar(255) null,
+  tool_type integer not null,
+  tool_data SQL_TEXT null,
+  description varchar(255) null,
+  flags integer not null,
+  tool_filter SQL_TEXT null,
+  confirmation_text varchar(255) null,
+  command_name varchar(255) null,
+  command_short_name varchar(31) null,
+  icon SQL_TEXT null,
+  remote_port integer not null,
+  PRIMARY KEY(tool_id)
+) TABLE_TYPE;
+
+/*
+** Access list for object tools
+*/
+CREATE TABLE object_tools_acl
+(
+  tool_id integer not null,
+  user_id integer not null,
+  PRIMARY KEY(tool_id,user_id)
+) TABLE_TYPE;
+
+/*
+** Configuration of columns for SNMP_TABLE and AGENT_TABLE type of object tools
+*/
+CREATE TABLE object_tools_table_columns
+(
+  tool_id integer not null,
+  col_number integer not null,
+  col_name varchar(255) null,
+  col_oid varchar(255) null,
+  col_format integer, // Column format (integer, string, etc.)
+  col_substr integer, // Number of matching substring in regexp
+  PRIMARY KEY(tool_id,col_number)
+) TABLE_TYPE;
+
+/**
+ * Input fields (used by object tools and object queries)
+ */
+CREATE TABLE input_fields
+(
+  category char(1) not null, /* 'T' for object tools, 'Q' for object queries */
+  owner_id integer not null, /* owning entity ID (object tool, object query, etc.) */
+  name varchar(31) not null,
+  input_type char(1) not null,
+  display_name varchar(127) null,
+  sequence_num integer not null,
+  flags integer not null,
+  PRIMARY KEY(category,owner_id,name)
+) TABLE_TYPE;
+
+/*
+** Stored syslog messages
+*/
+CREATE TABLE syslog
+(
+  msg_id SQL_INT64 not null,
+#ifdef DB_TSDB
+  msg_timestamp timestamptz not null,
+#else
+  msg_timestamp integer not null,
+#endif
+  facility integer not null,
+  severity integer not null,
+  source_object_id integer not null,
+  zone_uin integer not null,
+  hostname varchar(127) null,
+  msg_tag varchar(32) null,
+  msg_text SQL_TEXT null,
+#ifdef DB_TSDB
+  PRIMARY KEY(msg_id,msg_timestamp)
+#else
+  PRIMARY KEY(msg_id)
+#endif
+) TABLE_TYPE;
+
+CREATE INDEX idx_syslog_msg_timestamp ON syslog(msg_timestamp);
+CREATE INDEX idx_syslog_source ON syslog(source_object_id);
+
+#ifdef DB_TSDB
+SELECT create_hypertable('syslog', 'msg_timestamp', chunk_time_interval => interval '86400 seconds');
+#endif
+
+/*
+** Script library
+*/
+CREATE TABLE script_library
+(
+  guid varchar(36) not null,
+  script_id integer not null,
+  script_name varchar(255) not null,
+  script_code SQL_TEXT null,
+  PRIMARY KEY(script_id)
+) TABLE_TYPE;
+
+/*
+** Extended SNMP trap log
+*/
+CREATE TABLE snmp_trap_log
+(
+  trap_id SQL_INT64 not null,
+#ifdef DB_TSDB
+  trap_timestamp timestamptz not null,
+#else
+  trap_timestamp integer not null,
+#endif
+  ip_addr varchar(48) not null,
+  object_id integer not null,
+  zone_uin integer not null,
+  trap_oid varchar(255) not null,
+  trap_varlist SQL_TEXT null,
+#ifdef DB_TSDB
+  PRIMARY KEY(trap_id,trap_timestamp)
+#else
+  PRIMARY KEY(trap_id)
+#endif
+) TABLE_TYPE;
+
+CREATE INDEX idx_snmp_trap_log_tt ON snmp_trap_log(trap_timestamp);
+CREATE INDEX idx_snmp_trap_log_oid ON snmp_trap_log(object_id);
+
+#ifdef DB_TSDB
+SELECT create_hypertable('snmp_trap_log', 'trap_timestamp', chunk_time_interval => interval '86400 seconds');
+#endif
+
+/*
+** Agent configurations
+*/
+CREATE TABLE agent_configs
+(
+  config_id integer not null,
+  config_name varchar(255) not null,
+  config_file SQL_TEXT not null,
+  config_filter SQL_TEXT not null,
+  sequence_number integer not null,
+  PRIMARY KEY(config_id)
+) TABLE_TYPE;
+
+/*
+** Address lists
+*/
+CREATE TABLE address_lists
+(
+  list_type integer not null, // discovery filter, etc.
+  community_id integer not null, // community id for snmp community addr list, otherwise 0
+  zone_uin integer not null,  // zone UIN for discovery ranges, otherwise 0
+  proxy_id integer not null,  // proxy node ID for discovery ranges, otherwise 0
+  addr_type integer not null, // 0 - addr/mask, 1 - address range
+  addr1 varchar(48) not null,
+  addr2 varchar(48) not null,
+  comments varchar(255) null,
+  PRIMARY KEY(list_type,community_id,zone_uin,addr_type,addr1,addr2)
+) TABLE_TYPE;
+
+CREATE INDEX idx_address_lists_list_type ON address_lists(list_type);
+
+/*
+** Graphs
+*/
+CREATE TABLE graphs
+(
+  graph_id integer not null,
+  owner_id integer not null,
+  flags integer not null,
+  name varchar(255) not null,
+  config SQL_TEXT null,
+  filters SQL_TEXT null,
+  PRIMARY KEY(graph_id)
+) TABLE_TYPE;
+
+/*
+** Graph access lists
+*/
+CREATE TABLE graph_acl
+(
+  graph_id integer not null,
+  user_id integer not null,
+  user_rights integer not null,
+  PRIMARY KEY(graph_id,user_id)
+) TABLE_TYPE;
+
+/**
+ * Certificate action log
+ */
+CREATE TABLE certificate_action_log
+(
+  record_id integer not null,
+#ifdef DB_TSDB
+  operation_timestamp timestamptz not null,
+#else
+  operation_timestamp integer not null,
+#endif
+  operation integer not null,
+  user_id integer not null,
+  node_id integer not null,
+  node_guid varchar(36) null,
+  cert_type integer not null,
+  subject varchar(255) null,
+  serial integer null,
+#ifdef DB_TSDB
+  PRIMARY KEY(record_id,operation_timestamp)
+#else
+  PRIMARY KEY(record_id)
+#endif
+) TABLE_TYPE;
+
+CREATE INDEX idx_cert_action_log_timestamp ON certificate_action_log(operation_timestamp);
+
+#ifdef DB_TSDB
+SELECT create_hypertable('certificate_action_log', 'operation_timestamp', chunk_time_interval => interval '86400 seconds');
+#endif
+
+/**
+ * Audit log
+ */
+CREATE TABLE audit_log
+(
+  record_id integer not null,
+  timestamp integer not null,
+  subsystem varchar(32) not null,
+  success integer not null,
+  user_id integer not null, // 0x7FFFFFFF for system
+  workstation varchar(63) not null,
+  session_id integer not null,
+  object_id integer not null,
+  message SQL_TEXT null,
+  old_value SQL_TEXT null,
+  new_value SQL_TEXT null,
+  value_type char(1) null,
+  hmac varchar(64) null,
+  PRIMARY KEY(record_id)
+) TABLE_TYPE;
+
+/**
+ * Persistent storage
+ */
+CREATE TABLE persistent_storage
+(
+  entry_key varchar(127) not null,
+  value varchar(2000) null,
+  PRIMARY KEY(entry_key)
+) TABLE_TYPE;
+
+/*
+** List of possible community strings
+*/
+CREATE TABLE snmp_communities
+(
+  id integer not null,
+  community varchar(255) null,
+  zone integer not null,
+  PRIMARY KEY(id,zone)
+) TABLE_TYPE;
+
+/**
+ * Agent policies - common attributes
+ */
+CREATE TABLE ap_common
+(
+  guid varchar(36) not null,
+  owner_id integer not null,
+  policy_name varchar(63) not null,
+  policy_type varchar(31) not null,
+  version integer not null,
+  flags integer not null,
+  file_content SQL_TEXT null,
+  PRIMARY KEY(guid)
+) TABLE_TYPE;
+
+/**
+ * Default SNMP v3 USM credentials
+ */
+CREATE TABLE usm_credentials
+(
+  id integer not null,
+  user_name varchar(255) not null,
+  auth_method integer not null,
+  priv_method integer not null,
+  auth_password varchar(255) null,
+  priv_password varchar(255) null,
+  zone integer not null,
+  comments varchar(255) null,
+  PRIMARY KEY(id,zone)
+) TABLE_TYPE;
+
+/*
+** Well-known TCP or UDP ports
+*/
+CREATE TABLE well_known_ports 
+(
+   tag varchar(15) not null,
+   zone integer not null,
+   id integer not null,
+   port integer not null,
+   PRIMARY KEY(tag,zone,id)
+) TABLE_TYPE;
+
+/*
+** Network maps
+*/
+CREATE TABLE network_maps
+(
+  id integer not null,
+  map_type integer not null,
+  layout integer not null,
+  radius integer not null,
+  background varchar(36) null,
+  bg_latitude varchar(20) null,
+  bg_longitude varchar(20) null,
+  bg_zoom integer null,
+  bg_color integer not null,
+  link_color integer not null,
+  link_routing integer not null,
+  link_width integer not null,
+  link_style integer not null,
+  object_display_mode integer not null,
+  filter SQL_TEXT null,
+  link_styling_script SQL_TEXT null,
+  width integer not null,
+  height integer not null,
+  display_priority integer not null,
+  PRIMARY KEY(id)
+) TABLE_TYPE;
+
+/**
+ * Elements of network maps
+ */
+CREATE TABLE network_map_elements
+(
+  map_id integer not null,
+  element_id integer not null,
+  element_type integer not null,
+  element_data SQL_TEXT not null,
+  flags integer not null,
+  PRIMARY KEY(map_id,element_id)
+) TABLE_TYPE;
+
+/**
+ * Links on network maps
+ */
+CREATE TABLE network_map_links
+(
+  map_id integer not null,
+  link_id integer not null,
+  element1 integer not null,
+  interface1 integer not null,
+  element2 integer not null,
+  interface2 integer not null,
+  link_type integer not null,
+  link_name varchar(255) null,
+  connector_name1 varchar(255) null,
+  connector_name2 varchar(255) null,
+  element_data SQL_TEXT null,
+  flags integer not null,
+  color_source integer not null,
+  color integer not null,
+  color_provider varchar(255) null,
+  PRIMARY KEY(map_id,link_id)
+) TABLE_TYPE;
+
+CREATE INDEX idx_network_map_links_map_id ON network_map_links(map_id);
+
+/**
+ * Seed nodes of network maps
+ */
+CREATE TABLE network_map_seed_nodes
+(
+  map_id integer not null,
+  seed_node_id integer not null,
+  PRIMARY KEY(map_id,seed_node_id)
+) TABLE_TYPE;
+
+/**
+ * Object location for deleted nodes
+ */
+CREATE TABLE network_map_deleted_nodes 
+(
+  map_id integer not null,
+  object_id integer not null,
+  element_index integer not null,
+  position_x integer not null,
+  position_y integer not null,
+  PRIMARY KEY(map_id, object_id)
+) TABLE_TYPE;
+
+/**
+ * Image Library
+ */
+CREATE TABLE images
+(
+  guid varchar(36) not null,
+  name varchar(63) not null,
+  category varchar(63) not null,
+  mimetype varchar(32) not null,
+  protected integer default 0,
+  PRIMARY KEY(guid),
+  UNIQUE(name, category)
+) TABLE_TYPE;
+
+/**
+ * Dashboards
+ */
+CREATE TABLE dashboards
+(
+  id integer not null,
+  num_columns integer not null,
+  display_priority integer not null,
+  PRIMARY KEY(id)
+) TABLE_TYPE;
+
+/**
+ * Dashboard elements
+ */
+CREATE TABLE dashboard_elements
+(
+  dashboard_id integer not null,
+  element_id integer not null,
+  element_type integer not null,
+  element_data SQL_TEXT null,
+  layout_data SQL_TEXT null,
+  PRIMARY KEY(dashboard_id,element_id)
+) TABLE_TYPE;
+
+/**
+ * Dashboard templates
+ */
+CREATE TABLE dashboard_templates
+(
+  id integer not null,
+  num_columns integer not null,
+  name_template varchar(255),
+  PRIMARY KEY(id)
+) TABLE_TYPE;
+
+/**
+ * Dashboard template instances
+ */
+CREATE TABLE dashboard_template_instances
+(
+  dashboard_template_id integer not null,
+  instance_object_id integer not null,
+  instance_dashboard_id integer not null,
+  PRIMARY KEY(dashboard_template_id, instance_object_id)
+) TABLE_TYPE;
+
+/**
+ * Associations between dashboards and other objects
+ */
+CREATE TABLE dashboard_associations
+(
+  object_id integer not null,
+  dashboard_id integer not null,
+  PRIMARY KEY(object_id,dashboard_id)
+) TABLE_TYPE;
+
+/**
+ * Business services
+ */
+CREATE TABLE business_services
+(
+  id integer not null,
+  prototype_id integer not null,
+  instance varchar(1023),
+  object_status_threshold integer not null,
+  dci_status_threshold integer not null,
+  PRIMARY KEY(id)
+) TABLE_TYPE;
+
+/**
+ * Business service prototypes
+ */
+CREATE TABLE business_service_prototypes
+(
+  id integer not null,
+  instance_method integer not null,
+  instance_source integer not null,
+  instance_data varchar(1023),
+  instance_filter SQL_TEXT,
+  object_status_threshold integer not null,
+  dci_status_threshold integer not null,
+  PRIMARY KEY(id)
+) TABLE_TYPE;
+
+/**
+ * Business service checks
+ */
+CREATE TABLE business_service_checks
+(
+  id integer not null,
+  service_id integer not null,  
+  prototype_service_id integer not null,
+  prototype_check_id integer not null,
+  type integer not null, // 2 - threshold, 1 - script, 0 - object
+  description varchar(1023),
+  related_object integer not null,
+  related_dci integer not null,  // threshold_id => related_dci
+  status_threshold integer not null,
+  content SQL_TEXT null, // if type == 1
+  status integer not null,
+  current_ticket integer not null,
+  failure_reason varchar(255) null,
+  PRIMARY KEY(id)
+) TABLE_TYPE;
+
+/*
+** SLA - agreements
+*/
+CREATE TABLE slm_agreements
+(
+  agreement_id integer not null,
+  service_id integer not null,
+  org_id integer not null,
+  uptime varchar(63) not null, // required uptime, numeric(10,2) ?
+  period integer not null, // 1 - day, 2 - month
+  start_date integer not null, // date in YYYYMMDD format
+  notes varchar(255),
+  PRIMARY KEY(agreement_id)
+) TABLE_TYPE;
+
+/*
+** Business service tickets
+*/
+CREATE TABLE business_service_tickets
+(
+  ticket_id integer not null,
+  service_id integer not null,
+  original_ticket_id integer not null,
+  original_service_id integer not null,
+  check_id integer not null,
+  check_description varchar(1023),
+  create_timestamp integer not null,
+  close_timestamp integer not null,
+  reason varchar(255) null,
+  PRIMARY KEY(ticket_id)
+) TABLE_TYPE;
+
+/*
+** Business service downtime log
+*/
+CREATE TABLE business_service_downtime
+(
+  record_id integer not null,
+  service_id integer not null,
+  from_timestamp integer not null,
+  to_timestamp integer not null,
+  PRIMARY KEY(record_id)
+) TABLE_TYPE;
+
+/*
+** Organizations
+*/
+
+CREATE TABLE organizations
+(
+  id integer not null,
+  parent_id integer not null,
+  org_type integer not null,
+  name varchar(63) not null,
+  description varchar(255),
+  manager integer not null, // manager - id from "persons" table
+  PRIMARY KEY(id)
+) TABLE_TYPE;
+
+/*
+** Persons
+*/
+
+CREATE TABLE persons
+(
+  id integer not null,
+  org_id integer not null,
+  first_name varchar(63),
+  last_name varchar(63),
+  title varchar(255),
+  status integer not null,
+  PRIMARY KEY(id)
+) TABLE_TYPE;
+
+/*
+** License repository
+*/
+CREATE TABLE licenses
+(
+  id integer not null,
+  guid varchar(36) not null,
+  content varchar(2000) null,
+  PRIMARY KEY(id)
+) TABLE_TYPE;
+
+/*
+** Mapping tables
+*/
+CREATE TABLE mapping_tables
+(
+  id integer not null,
+  name varchar(63) not null,
+  flags integer not null,
+  description varchar(4000) null,
+  PRIMARY KEY(id)
+) TABLE_TYPE;
+
+/*
+** Mapping tables content
+*/
+CREATE TABLE mapping_data
+(
+  table_id integer not null,
+  md_key varchar(63) not null,
+  md_value varchar(4000) null,
+  description varchar(4000) null,
+  PRIMARY KEY(table_id,md_key)
+) TABLE_TYPE;
+
+/*
+** DCI summary tables
+*/
+CREATE TABLE dci_summary_tables
+(
+  id integer not null,
+  guid varchar(36) not null,
+  menu_path varchar(255) null,
+  title varchar(127) null,
+  node_filter SQL_TEXT null,
+  flags integer not null,
+  columns SQL_TEXT null,
+  table_dci_name varchar(255) null,
+  PRIMARY KEY(id)
+) TABLE_TYPE;
+
+/*
+** Scheduled tasks
+*/
+CREATE TABLE scheduled_tasks
+(
+  id SQL_INT64 not null,
+  taskId varchar(255) null,
+  schedule varchar(127) null,
+  params varchar(1023) null,
+  execution_time integer not null,
+  last_execution_time integer not null,
+  flags integer not null,
+  owner integer not null,
+  object_id integer not null,
+  comments varchar(255) null,
+  task_key varchar(255) null,
+  PRIMARY KEY(id)
+) TABLE_TYPE;
+
+/**
+ * Currency codes
+ */
+CREATE TABLE currency_codes
+(
+	numeric_code char(3) not null,
+	alpha_code char(3) not null,
+	description varchar(127) not null,
+	exponent integer not null,
+	PRIMARY KEY(numeric_code)
+) TABLE_TYPE;
+
+/**
+ * Country codes
+ */
+CREATE TABLE country_codes
+(
+	numeric_code char(3) not null,
+	alpha_code char(2) not null,
+	alpha3_code char(3) not null,
+	name varchar(127) not null,
+	PRIMARY KEY(numeric_code)
+) TABLE_TYPE;
+
+/**
+ * Config repositories
+ */
+CREATE TABLE config_repositories
+(
+	id integer not null,
+	url varchar(1023) not null,
+	auth_token varchar(63) null,
+	description varchar(1023) null,
+	PRIMARY KEY(id)
+) TABLE_TYPE;
+
+/**
+ * Network equipment port layouts
+ */
+CREATE TABLE port_layouts
+(
+   device_oid varchar(127) not null,
+   numbering_scheme char(1) not null,
+   row_count char(1) not null,
+   layout_data varchar(4000) null,
+   PRIMARY KEY(device_oid)
+) TABLE_TYPE;
+
+/**
+ * Snapshot for object access rights
+ */
+CREATE TABLE object_access_snapshot
+(
+   user_id integer not null,
+   object_id integer not null,
+   access_rights integer not null,
+   PRIMARY KEY(user_id,object_id)
+) TABLE_TYPE;
+
+/**
+ * Sensor specific information table
+ */
+CREATE TABLE sensors
+(
+   id integer not null,
+   gateway_node integer not null,
+   device_class integer not null,
+   modbus_unit_id integer not null,
+   capabilities integer not null,
+   mac_address varchar(16) null,
+   vendor varchar(127) null,
+   model varchar(127) null,
+   serial_number varchar(63) null,
+   device_address varchar(127) null,
+   PRIMARY KEY(id)
+) TABLE_TYPE;
+
+/**
+ * Object responsible users
+ */
+CREATE TABLE responsible_users
+(
+   object_id integer not null,
+   user_id integer not null,
+   tag varchar(31) null,
+   PRIMARY KEY(object_id,user_id)
+) TABLE_TYPE;
+
+/**
+ * Auto bind information for objects
+ */
+CREATE TABLE auto_bind_target 
+(
+   object_id integer not null,
+   bind_filter_1 SQL_TEXT null,
+   bind_filter_2 SQL_TEXT null,
+   flags integer not null,
+   PRIMARY KEY(object_id)
+) TABLE_TYPE;
+
+/**
+ * Versionning table for objects
+ */
+CREATE TABLE versionable_object 
+(
+   object_id integer not null,
+   version integer not null,
+   PRIMARY KEY(object_id)
+) TABLE_TYPE;
+
+/**
+ * User agent messages
+ */
+CREATE TABLE user_agent_notifications 
+( 
+   id integer not null,
+   message varchar(1023) null,
+   objects varchar(1023) not null,
+   start_time integer not null,
+   end_time integer not null,
+   recall char(1) not null,
+   on_startup char(1) not null,
+   creation_time integer not null,
+   created_by integer not null,
+   PRIMARY KEY(id)
+) TABLE_TYPE;
+
+/**
+ * Notification channel configurations
+ */
+CREATE TABLE notification_channels
+(
+   name varchar(63) not null,
+   driver_name varchar(63) not null,
+   description  varchar(255) null,
+   configuration SQL_TEXT null,
+   PRIMARY KEY(name)
+) TABLE_TYPE;
+
+/**
+ * Persistent storage for notification channels
+ */
+CREATE TABLE nc_persistent_storage
+(
+   channel_name varchar(63) not null,
+   entry_name varchar(127) not null,
+   entry_value varchar(2000) null,
+   PRIMARY KEY(channel_name, entry_name)
+) TABLE_TYPE;
+
+/**
+ * 2FA methods configurations
+ */
+CREATE TABLE two_factor_auth_methods
+(
+   name varchar(63) not null,
+   driver varchar(63) null,
+   description varchar(255) null,
+   configuration SQL_TEXT null,
+   PRIMARY KEY(name)
+) TABLE_TYPE;
+
+/**
+ * 2FA method bindings
+ */
+CREATE TABLE two_factor_auth_bindings
+(
+   user_id integer not null,
+   name varchar(63) not null,
+   configuration SQL_TEXT null,
+   PRIMARY KEY(user_id,name)
+) TABLE_TYPE;
+
+/**
+ * Web service definitions
+ */
+CREATE TABLE websvc_definitions
+(
+   id integer not null,
+   guid varchar(36) not null,
+   name varchar(63) not null,
+   description varchar(2000) null,
+   url varchar(4000) null,
+   http_request_method integer not null,
+   request_data varchar(4000) null,
+   flags integer not null,
+   auth_type integer not null,
+   login varchar(255) null,
+   password varchar(255) null,
+   cache_retention_time integer not null,
+   request_timeout integer not null,
+   PRIMARY KEY(id)
+) TABLE_TYPE;
+
+/**
+ * Additional headers for web services
+ */
+CREATE TABLE websvc_headers
+(
+   websvc_id integer not null,
+   name varchar(63) not null,
+   value varchar(2000) null,
+   PRIMARY KEY(websvc_id,name)
+) TABLE_TYPE;
+
+/**
+ * Shared secrets default and for zones
+ */
+CREATE TABLE shared_secrets 
+(
+   id integer not null,
+   secret varchar(88) null,
+   zone integer not null,
+   PRIMARY KEY(id,zone)
+) TABLE_TYPE;
+
+/**
+ * List of deleted DCIs to clear data on housekeeper
+ */
+CREATE TABLE dci_delete_list 
+(
+   node_id integer not null,
+   dci_id integer not null,
+   type char(1) not null,
+   PRIMARY KEY (node_id,dci_id)
+) TABLE_TYPE;
+
+/**
+ * Stored Windows event log messages
+ */
+CREATE TABLE win_event_log
+(
+   id SQL_INT64 not null,
+#ifdef DB_TSDB
+   event_timestamp timestamptz not null,
+#else
+   event_timestamp integer not null,
+#endif
+   node_id integer not null,
+   zone_uin integer not null,
+   origin_timestamp integer not null,
+   log_name varchar(63) null,
+   event_source varchar(127) null,
+   event_severity integer not null,
+   event_code integer not null,
+   message varchar(2000) null,
+   raw_data SQL_TEXT null,
+#ifdef DB_TSDB
+   PRIMARY KEY(id,event_timestamp)
+#else
+   PRIMARY KEY(id)
+#endif
+) TABLE_TYPE;
+
+CREATE INDEX idx_win_event_log_timestamp ON win_event_log(event_timestamp);
+CREATE INDEX idx_win_event_log_node ON win_event_log(node_id);
+
+#ifdef DB_TSDB
+SELECT create_hypertable('win_event_log', 'event_timestamp', chunk_time_interval => interval '86400 seconds');
+#endif
+
+/**
+ * Geographical areas
+ */
+CREATE TABLE geo_areas
+(
+   id integer not null,
+   name varchar(127) not null,
+   comments SQL_TEXT null,
+   configuration SQL_TEXT null,
+   PRIMARY KEY(id)
+) TABLE_TYPE;
+
+/**
+ * Data collection target information about object
+ */
+CREATE TABLE dc_targets 
+(
+   id integer not null,
+   geolocation_ctrl_mode integer not null,
+   geo_areas varchar(2000) null,
+   web_service_proxy integer not null,
+   PRIMARY KEY(id)
+) TABLE_TYPE;
+
+/**
+ * Pollable class information about object
+ */
+CREATE TABLE pollable_objects
+(
+   id integer not null,
+   config_poll_timestamp integer not null,
+   instance_poll_timestamp integer not null,
+   PRIMARY KEY(id)
+) TABLE_TYPE;
+
+/**
+ * SSH keys
+ */
+CREATE TABLE ssh_keys 
+(
+   id integer not null,
+   name varchar(255) not null,
+   public_key SQL_TEXT null,
+   private_key SQL_TEXT null,
+   PRIMARY KEY(id)
+) TABLE_TYPE;
+
+/**
+ * SSH credentials
+ */
+CREATE TABLE ssh_credentials
+(
+   zone_uin integer not null,
+   id integer not null,
+   login varchar(63) null,
+   password varchar(63) null,
+   key_id integer not null,
+   PRIMARY KEY(zone_uin,id)
+) TABLE_TYPE;
+
+/**
+ * VNC credentials
+ */
+CREATE TABLE vnc_credentials
+(
+   zone_uin integer not null,
+   id integer not null,
+   password varchar(63) null,
+   PRIMARY KEY(zone_uin,id)
+) TABLE_TYPE;
+
+/**
+ * Predefined object queries
+ */
+CREATE TABLE object_queries
+(
+   id integer not null,
+   guid varchar(36) not null,
+   name varchar(63) not null,
+   description varchar(255) null,
+   script SQL_TEXT null,
+   PRIMARY KEY(id)
+) TABLE_TYPE;
+
+/**
+ * Maintenance journal entries
+ */
+CREATE TABLE maintenance_journal
+(
+   record_id integer not null,
+   object_id integer not null,
+   author integer not null,
+   last_edited_by integer not null,
+   description SQL_TEXT null,
+#ifdef DB_TSDB
+   creation_time timestamptz not null,
+   modification_time timestamptz not null,
+   PRIMARY KEY(record_id,creation_time)
+#else
+   creation_time integer not null,
+   modification_time integer not null,
+   PRIMARY KEY(record_id)
+#endif
+) TABLE_TYPE;
+
+CREATE INDEX idx_maintjrn_creation_time ON maintenance_journal(creation_time);
+CREATE INDEX idx_maintjrn_object_id ON maintenance_journal(object_id);
+
+#ifdef DB_TSDB
+SELECT create_hypertable('maintenance_journal', 'creation_time', chunk_time_interval => interval '86400 seconds');
+#endif
+
+/**
+ * Asset management attributes
+ */
+CREATE TABLE am_attributes
+(
+   attr_name varchar(63) not null,
+   display_name varchar(255) null,
+   data_type integer not null,
+   is_mandatory char(1) not null,
+   is_unique char(1) not null,
+   is_hidden char(1) not null,
+   autofill_script SQL_TEXT null,
+   range_min integer not null,
+   range_max integer not null,
+   sys_type integer not null,
+   PRIMARY KEY(attr_name)
+) TABLE_TYPE;
+
+/**
+ * Possible values for asset management attributes of "enum" type
+ */
+CREATE TABLE am_enum_values
+(
+   attr_name varchar(63) not null,
+   value varchar(63) not null,
+   display_name varchar(255) not null,
+   PRIMARY KEY(attr_name,value)
+) TABLE_TYPE;
+
+/**
+ * Assets
+ */
+CREATE TABLE assets
+(
+   id integer not null,
+   linked_object_id integer not null,
+   last_update_timestamp integer not null,
+   last_update_uid integer not null,
+   PRIMARY KEY(id)
+) TABLE_TYPE;
+
+/**
+ * Asset properties
+ */
+CREATE TABLE asset_properties
+(
+   asset_id integer not null,
+   attr_name varchar(63) not null,
+   value varchar(2000) null,
+   PRIMARY KEY(asset_id,attr_name)
+) TABLE_TYPE;
+
+/**
+ * Asset change log
+ */
+CREATE TABLE asset_change_log
+(
+   record_id SQL_INT64 not null,
+#ifdef DB_TSDB
+   operation_timestamp timestamptz not null,
+#else
+   operation_timestamp integer not null,
+#endif
+   asset_id integer not null,
+   attribute_name varchar(63) null,
+   operation integer not null,
+   old_value varchar(2000) null,
+   new_value varchar(2000) null,
+   user_id integer not null,
+   linked_object_id integer not null,
+#ifdef DB_TSDB
+  PRIMARY KEY(record_id,operation_timestamp)
+#else
+  PRIMARY KEY(record_id)
+#endif
+) TABLE_TYPE;
+
+CREATE INDEX idx_srv_asset_log_timestamp ON asset_change_log(operation_timestamp);
+CREATE INDEX idx_srv_asset_log_asset_id ON asset_change_log(asset_id);
+
+#ifdef DB_TSDB
+SELECT create_hypertable('asset_change_log', 'operation_timestamp', chunk_time_interval => interval '86400 seconds');
+#endif
+
+/**
+ * Active downtimes
+ */
+CREATE TABLE active_downtimes
+(
+   object_id integer not null,
+   downtime_tag varchar(15) not null,
+   start_time integer not null,
+   PRIMARY KEY(object_id,downtime_tag)
+) TABLE_TYPE;
+
+/**
+ * Downtime log
+ */
+CREATE TABLE downtime_log
+(
+   object_id integer not null,
+   start_time integer not null,
+   end_time integer not null,
+   downtime_tag varchar(15) not null,
+   PRIMARY KEY(object_id,start_time,downtime_tag)
+) TABLE_TYPE;
+
+/**
+ * Active AI tasks
+ */
+CREATE TABLE ai_tasks
+(
+   id integer not null,
+   user_id integer not null,
+   description varchar(255),
+   prompt SQL_TEXT,
+   memento SQL_TEXT,
+   last_execution_time integer not null,
+   next_execution_time integer not null,
+   iteration integer not null,
+   PRIMARY KEY(id)
+) TABLE_TYPE;
+
+/**
+ * AI task execution log
+ */
+CREATE TABLE ai_task_execution_log
+(
+   record_id SQL_INT64 not null,
+#ifdef DB_TSDB
+   execution_timestamp timestamptz not null,
+#else
+   execution_timestamp integer not null,
+#endif
+   task_id integer not null,
+   task_description varchar(255),
+   user_id integer not null,
+   status char(1) not null, // C=completed, F=failed, S=scheduled
+   iteration integer not null,
+   explanation SQL_TEXT,
+#ifdef DB_TSDB
+  PRIMARY KEY(record_id,execution_timestamp)
+#else
+   PRIMARY KEY(record_id)
+#endif
+) TABLE_TYPE;
+
+CREATE INDEX idx_ai_task_exec_log_timestamp ON ai_task_execution_log(execution_timestamp);
+CREATE INDEX idx_ai_task_exec_log_asset_id ON ai_task_execution_log(task_id);
+
+#ifdef DB_TSDB
+SELECT create_hypertable('ai_task_execution_log', 'execution_timestamp', chunk_time_interval => interval '86400 seconds');
+#endif

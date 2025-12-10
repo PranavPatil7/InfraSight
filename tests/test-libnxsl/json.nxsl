@@ -1,0 +1,132 @@
+json = new JsonObject();
+json.flags = 42;
+json.name = "Test Object";
+json.data = new JsonObject();
+json.data.version = "V1.22";
+json.data.reference = "reference string";
+json.data.value = 0.712;
+json.set("rcpt", "mail@domain.com");
+json.series = %(1, 2, 3, 10, 20);
+json.map = %{ "name":"test map", "value":200 };
+
+r = json.data;
+r.extraBytes = "some extra bytes";
+
+serialized = json.serialize();
+assert(serialized like "*   \"flags\": 42*");
+assert(serialized like "*   \"name\": \"Test Object\"*");
+assert(serialized like "*   \"data\": {*");
+assert(serialized like "*      \"version\": \"V1.22\"*");
+assert(serialized like "*      \"reference\": \"reference string\"*");
+assert(serialized like "*      \"value\": 0.71199999999999997*");
+assert(serialized like "*      \"extraBytes\": \"some extra bytes\"*");
+assert(serialized like "*   }*");
+assert(serialized like "*   \"rcpt\": \"mail@domain.com\"*");
+assert(serialized like "*   \"series\": [*");
+assert(serialized like "*      1,*");
+assert(serialized like "*      2,*");
+assert(serialized like "*      3,*");
+assert(serialized like "*      10,*");
+assert(serialized like "*      20*");
+assert(serialized like "*   ]*");
+
+expectedValues = %( "flags = 42", "name = Test Object", "data = JsonObject@*", "rcpt = mail@domain.com", "series = JsonArray@*", "map = JsonObject@*" );
+
+for(k : json.keys())
+{
+	found = false;
+	for(v : expectedValues)
+	{
+		if((k .. " = " .. json.get(k)) like v)
+			found = true;
+	}
+	assert(found);
+}
+json = JsonParse(serialized);
+assert(json != null);
+
+//Check fields as they were set
+assert(json.flags == 42);
+assert(json.name == "Test Object");
+assert(json.data.version == "V1.22");
+assert(json.data.reference == "reference string");
+assert(json.data.value == 0.712);
+assert(json.get("rcpt") == "mail@domain.com");
+assert(json.series.get(0) == 1);
+assert(json.series.get(1) == 2);
+assert(json.series.get(2) == 3);
+assert(json.series.get(3) == 10);
+assert(json.series.get(4) == 20);
+assert(json.map.name == "test map");
+assert(json.map.value == 200);
+
+
+assert(json.name == "Test Object");
+
+timestamp = time();
+json.timestamp = timestamp;
+json.zzz = %(1, 2, %("level2-1", "level2-2"));
+
+serialized = json.serialize();
+assert(serialized like "*   \"flags\": 42*");
+assert(serialized like "*   \"name\": \"Test Object\"*");
+assert(serialized like "*   \"data\": {*");
+assert(serialized like "*      \"version\": \"V1.22\"*");
+assert(serialized like "*      \"reference\": \"reference string\"*");
+assert(serialized like "*      \"value\": 0.71199999999999997*");
+assert(serialized like "*      \"extraBytes\": \"some extra bytes\"*");
+assert(serialized like "*   }*");
+assert(serialized like "*   \"rcpt\": \"mail@domain.com\"*");
+assert(serialized like "*   \"series\": [*");
+assert(serialized like "*      1,*");
+assert(serialized like "*      2,*");
+assert(serialized like "*      3,*");
+assert(serialized like "*      10,*");
+assert(serialized like "*      20*");
+assert(serialized like "*   ]*");
+assert(serialized like ("*   \"timestamp\": " .. timestamp .. "*"));
+assert(serialized like "*   \"zzz\": [*");
+assert(serialized like "*      1*");
+assert(serialized like "*      2*");
+assert(serialized like "*      [*");
+assert(serialized like "*         \"level2-1\",*");
+assert(serialized like "*         \"level2-2\"*");
+assert(serialized like "*      ]*");
+
+series = json.series;
+assert(series.size == 5);
+
+expectedValues = %( 1, 2, 3, 10, 20 );
+
+i = 0;
+for(s : series.values)
+{
+	assert(s == expectedValues[i]);
+	i++;
+}
+
+series.append(42);
+series.append(%(10, 20, 30, "test"));
+assert(series.size == 7);
+
+
+expectedValues = %( 1, 2, 3, 10, 20, 42 );
+
+i = 0;
+for(s : json.series.values)
+{
+	assert(s == expectedValues[i]);
+	i++;
+	if(i == json.series.values.size - 1)
+		break;
+}
+assert(("" .. json.series.values[json.series.values.size - 1]) like "JsonArray@*");
+
+json = new JsonObject(%{ "name":"test", "value":100, "data":%{ "id":1, "version":"10X" }});
+assert(json != null);
+assert(json.name == "test");
+assert(json.value == 100);
+assert(json.data.id == 1);
+assert(json.data.version == "10X");
+
+return 0;

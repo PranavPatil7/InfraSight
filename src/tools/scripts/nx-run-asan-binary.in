@@ -1,0 +1,148 @@
+#!/bin/bash
+#
+# Start binary with address sanitizer
+# Copyright (c) 2020 Raden Solutions
+#
+# Usage: nx-run-asan-binary [-ndd] binary [arguments]
+#
+
+get_extension()
+{
+   filename=`basename $1`
+   n="${filename%.*}"
+   if [ "$n" == "$filename" ]; then
+      extension=""
+   else
+      extension="${filename##*.}"
+   fi
+}
+
+if [ "x$NETXMS_HOME" != "x" ]; then
+	BINDIR="$NETXMS_HOME/bin"
+	DATADIR="$NETXMS_HOME/share/netxms"
+	PKGLIBDIR="$NETXMS_HOME/lib/netxms"
+	SYSCONFDIR="$NETXMS_HOME/etc"
+else
+	BINDIR="~BINDIR~"
+	DATADIR="~DATADIR~"
+	PKGLIBDIR="~PKGLIBDIR~"
+	SYSCONFDIR="~SYSCONFDIR~"
+fi
+
+if [ "$1" == "-ndd" ]; then
+	shift
+	NDDS=`ls $PKGLIBDIR/ndd/*.ndd -1 | xargs`
+fi
+
+BINARY_NAME="$1"
+BINARY="$BINDIR/$BINARY_NAME"
+LIBASAN=`ldd $BINARY | grep libasan | cut -d '>' -f 2 | cut -d '(' -f 1 | xargs`
+if [ "x$LIBASAN" == "x" ]; then
+	echo "*** $BINARY was built without address sanitizer support"
+	exit 1
+fi
+LD_PRELOAD="$LIBASAN"
+
+ASAN_OPTIONS="detect_odr_violation=1${ASAN_OPTIONS:+:}${ASAN_OPTIONS}"
+
+# Remove binary name from argument list
+shift
+
+# Determine default config file name
+if [ "$BINARY_NAME" == "nxagentd" ]; then
+	CONFIG_NAME="nxagentd"
+else
+	CONFIG_NAME="netxmsd"
+fi
+
+# Check for config specified with -c
+CONFIG=`getopt -q -- c: "$@" | sed -e 's,--.*,,' | cut -d "'" -f 2 | xargs`
+if [ "x$CONFIG" == "x" ]; then
+	CONFIG="$SYSCONFDIR/$CONFIG_NAME.conf"
+	if [ ! -f "$CONFIG" ]; then
+		CONFIG="/etc/$CONFIG_NAME.conf"
+	fi
+fi
+
+if [ -f "$CONFIG" ]; then
+	echo "*** Using configuration file $CONFIG"
+
+	echo "*** Building database driver preload list"
+	DRIVERS=`cat $CONFIG | grep -v '#' | grep -i DBDriver | cut -d '=' -f 2 | xargs`
+	# Both agent and server can implicitly load sqlite.ddr
+	DRIVERS="sqlite.ddr $DRIVERS"
+	for DRIVER in $DRIVERS; do
+		if echo $DRIVER | grep -q /; then
+			FILE="$DRIVER"
+		else
+			FILE="$PKGLIBDIR/dbdrv/$DRIVER"
+		fi
+      get_extension "$FILE"
+      if [ "x$extension" != "xddr" -a "x$extension" != "xso" ]; then
+         FILE="${FILE}.ddr"
+      fi
+		if file -L $FILE | grep ELF; then
+			LD_PRELOAD="$LD_PRELOAD:$FILE"
+		fi
+	done
+
+	if [ "$BINARY_NAME" == "nxagentd" ]; then
+		echo "*** Building subagents preload list"
+		SUBAGENTS=`cat $CONFIG | grep -v '#' | grep -i SubAgent | cut -d '=' -f 2 | xargs`
+		PLATFORM=`uname -s | tr '[:upper:]' '[:lower:]'`
+		SUBAGENTS="$PLATFORM.nsm $SUBAGENTS"
+		for SUBAGENT in $SUBAGENTS; do
+			if echo $SUBAGENT | grep -q /; then
+				FILE="$SUBAGENT"
+			else
+				FILE="$PKGLIBDIR/$SUBAGENT"
+			fi
+         get_extension "$FILE"
+         if [ "x$extension" != "xnsm" -a "x$extension" != "xso" ]; then
+            FILE="${FILE}.nsm"
+         fi
+			if file -L $FILE | grep ELF; then
+				LD_PRELOAD="$LD_PRELOAD:$FILE"
+			fi
+		done
+	else
+		echo "*** Building modules preload list"
+		MODULES=`cat $CONFIG | grep -v '#' | grep -i Module | cut -d '=' -f 2 | xargs`
+		for MODULE in $MODULES; do
+			MODULE=`echo $MODULE | cut -d ',' -f 1`
+			if echo $MODULE | grep -q /; then
+				FILE="$MODULE"
+			else
+				FILE="$PKGLIBDIR/$MODULE"
+			fi
+         get_extension "$FILE"
+         if [ "x$extension" != "xnxm" -a "x$extension" != "xso" ]; then
+            FILE="${FILE}.nxm"
+         fi
+			if file -L $FILE | grep ELF; then
+				LD_PRELOAD="$LD_PRELOAD:$FILE"
+			fi
+		done
+
+		echo "*** Building network device drivers preload list"
+		for NDD in $NDDS; do
+			LD_PRELOAD="$LD_PRELOAD:$NDD"
+		done
+	fi
+fi
+
+LSAN_SUPPRESSIONS_FILE="$DATADIR/lsan-suppressions.txt"
+if [ -f "$LSAN_SUPPRESSIONS_FILE" ]; then
+	echo "*** Using suppressions file $LSAN_SUPPRESSIONS_FILE"
+	LSAN_OPTIONS="suppressions=$LSAN_SUPPRESSIONS_FILE"
+	export LSAN_OPTIONS
+fi
+
+echo "*** Starting $BINARY"
+echo "*** Options: $ASAN_OPTIONS"
+echo "*** $LD_PRELOAD"
+
+export ASAN_OPTIONS
+export LD_PRELOAD
+$BINARY "$@"
+exit $?

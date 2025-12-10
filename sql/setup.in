@@ -1,0 +1,538 @@
+/*
+** Default configuration parameters
+**
+** ex: syntax=sql
+*/
+
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('ActionExecutionLog.RetentionTime','90','90',1,0,'I','Retention time in days for the records in server action execution log. All records older than specified will be deleted by housekeeping process.','days');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Agent.CommandTimeout','4000','4000',1,1,'I','Timeout in milliseconds for commands sent to agent. If agent did not respond to command within given number of seconds, command considered as failed.','milliseconds');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Agent.DefaultCacheMode','2','2',1,1,'C','Default agent cache mode','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Agent.DefaultEncryptionPolicy','1','1',1,1,'C','Set the default encryption policy for communications with agents.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Agent.DefaultProtocolCompressionMode','1','1',1,0,'C','Default agent protocol compression mode','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Agent.EnableRegistration','1','1',1,0,'B','Enable/disable agent self-registration','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Agent.RestartWaitTime','0','0',1,0,'I','Period of time after agent restart for which agent will not be considered unreachable.','seconds');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Agent.Upgrade.WaitTime','600','600',1,0,'I','Maximum wait time in seconds for agent restart after upgrade. If agent cannot be contacted after this time period, upgrade process is considered as failed.','seconds');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('AgentPolicy.MaxFileSize','134217728','134217728',1,0,'I','Maximum file size for exported files in agent policies','bytes');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('AgentTunnels.BindByIPAddress','0','0',1,0,'B','Enable/disable agent tunnel binding by IP address. If enabled and agent certificate is not provided, tunnel will be bound to node with IP address matching tunnel source IP address.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('AgentTunnels.Certificates.ReissueInterval','30','30',1,1,'I','Interval in days between reissuing agent certificates.','days');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('AgentTunnels.Certificates.ValidityPeriod','90','90',1,1,'I','Validity period in days for newly issued agent certificates.','days');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('AgentTunnels.ListenPort','4703','4703',1,1,'I','TCP port number to listen on for incoming agent tunnel connections.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('AgentTunnels.NewNodesContainer','','',1,0,'S','Name of the container where nodes created automatically for unbound tunnels will be placed. If empty or missing, such nodes will be created in infrastructure services root.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('AgentTunnels.TLS.MinVersion','2','2',1,0,'C','Minimal version of TLS protocol used on agent tunnel connection.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('AgentTunnels.UnboundTunnelTimeout','3600','3600',1,0,'I','Unbound agent tunnels inactivity timeout. If tunnel is not bound or closed after timeout, action defined by AgentTunnels.UnboundTunnelTimeoutAction parameter will be taken.','seconds');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('AgentTunnels.UnboundTunnelTimeoutAction','0','0',1,0,'C','Action to be taken when unbound agent tunnel idle timeout expires.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Alarms.DeleteAlarmsOfDeletedObject','1','1',1,0,'B','Enable/disable automatic alarm removal of an object when it is deleted.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Alarms.EnableTimedAck','1','1',1,1,'B','Enable/disable ability to acknowledge an alarm for a specific time.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Alarms.HistoryRetentionTime','180','180',1,0,'I','A number of days the server keeps an alarm history in the database.','days');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Alarms.IgnoreHelpdeskState','0','0',1,0,'B','If set alarm helpdesk state will be ignored when resolving or terminating.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Alarms.ResolveExpirationTime','0','0',1,0,'I','Expiration time (in seconds) for resolved alarms. If set to non-zero, resolved and untouched alarms will be terminated automatically after given timeout.','seconds');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Alarms.StrictStatusFlow','0','0',1,0,'B','Enable/disable strict alarm status flow (alarm can be terminated only after it has been resolved).','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Alarms.SummaryEmail.Enable','0','0',1,0,'B','Enable/disable alarm summary e-mails.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Alarms.SummaryEmail.Recipients','','',1,0,'S','A semicolon separated list of alarm summary e-mail recipient addresses.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Alarms.SummaryEmail.Schedule','0 0 * * *','0 0 * * *',1,0,'S','Schedule for sending alarm summary e-mails in cron format.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('AssetChangeLog.RetentionTime','90','90',1,0,'I','Retention time in days for the records in asset change log. All records older than specified will be deleted by housekeeping process.','days');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('AuditLog.External.Facility','13','13',1,1,'I','Syslog facility to be used in audit log records sent to external server.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('AuditLog.External.Port','514','514',1,1,'I','UDP port of external syslog server to send audit records to.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('AuditLog.External.Server','none','none',1,1,'S','External syslog server to send audit records to. If set to "none", external audit logging is disabled.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('AuditLog.External.Severity','5','5',1,1,'I','Syslog severity to be used in audit log records sent to external server.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('AuditLog.External.Tag','netxmsd-audit','netxmsd-audit',1,1,'S','Syslog tag to be used in audit log records sent to external server.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('AuditLog.External.UseUTF8','0','0',1,0,'B','Changes audit log encoding to UTF-8','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('AuditLog.RetentionTime','90','90',1,0,'I','Retention time in days for the records in audit log. All records older than specified will be deleted by housekeeping process.','days');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Beacon.Hosts','','',1,1,'S','Comma-separated list of hosts to be used as beacons for checking NetXMS server network connectivity. Either DNS names or IP addresses can be used. This list is pinged by NetXMS server and if none of the hosts have responded, server considers that connection with network is lost and generates specific event.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Beacon.PollingInterval','1000','1000',1,1,'I','Interval in milliseconds between beacon hosts polls.','milliseconds');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Beacon.Timeout','1000','1000',1,1,'I','Timeout in milliseconds to consider beacon host unreachable.','milliseconds');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('BlockInactiveUserAccounts','0','0',1,0,'I','Inactivity time after which user account will be blocked (0 to disable blocking).','days');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('BusinessServices.Check.AutobindClassFilter','AccessPoint,Cluster,Interface,NetworkService,Node','AccessPoint,Cluster,Interface,NetworkService,Node',1,0,'S','Class filter for automatic creation of business service checks.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('BusinessServices.Check.Threshold.DataCollection','1','1',1,0,'C','Default threshold for business DCI service checks','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('BusinessServices.Check.Threshold.Objects','1','1',1,0,'C','Default threshold for business service objects checks','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('BusinessServices.History.RetentionTime','90','90',1,0,'I','Retention time for business service historical data','days');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('CAS.AllowedProxies','','',1,0,'S','Comma-separated list of allowed CAS proxies.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('CAS.Host','localhost','localhost',1,0,'S','CAS server DNS name or IP address.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('CAS.Port','8443','8443',1,0,'I','CAS server TCP port number.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('CAS.Service','https://127.0.0.1/nxmc','https://127.0.0.1/nxmc',1,0,'S','Service to validate (usually NetXMS web UI URL).','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('CAS.TrustedCACert','','',1,0,'S','File system path to CAS server trusted CA certificate.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('CAS.ValidateURL','/cas/serviceValidate','/cas/serviceValidate',1,0,'S','URL for service validation on CAS server.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('CertificateActionLog.RetentionTime','370','370',1,0,'I','Retention time in days for certificate action log. All records older than specified will be deleted by housekeeping process.','days');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Client.AlarmList.DisplayLimit','4096','4096',1,0,'I','Maximum alarm count that will be displayed on Alarm Browser page. Alarms that exceed this count will not be shown.','alarms');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,is_public,description,units) VALUES ('Client.DashboardDataExport.EnableInterpolation','1','1',1,1,'B','Y','Enable/disable data interpolation in dashboard data export.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Client.BaseURL','https://{server-name}','https://{server-name}',1,0,'S','Base URL for forming direct access URLs. Macro {server-name} can be used to insert name of the server where user is currently logged in.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Client.DefaultConsoleDateFormat','dd.MM.yyyy','dd.MM.yyyy',1,0,'S','Default date display format for GUI.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Client.DefaultConsoleShortTimeFormat','HH:mm','HH:mm',1,0,'S','Default short time display format for GUI.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Client.DefaultConsoleTimeFormat','HH:mm:ss','HH:mm:ss',1,0,'S','Default long time display format for GUI.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Client.DefaultLineChartPeriod','60','60',1,0,'I','Default period (in minutes) to display collected data for when opening ad-hoc line chart.','minutes');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Client.EnableWelcomePage','1','1',1,0,'B','Enable or disable welcome page in client application (shown when server is upgraded to new version and contains release notes).','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Client.FirstPacketTimeout','2000','2000',1,0,'I','Timeout for receiving first packet from client after establishing TCP connection.','milliseconds');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Client.InactivityTimeout','0','0',1,0,'I','User inactivity timeout in seconds. Client will disconnect if no user activity detected within given time interval. Value of 0 disables inactivity timeout.','seconds');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Client.KeepAliveInterval','60','60',1,1,'I','Interval in seconds between sending keep alive packets to connected clients.','seconds');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Client.ListenerPort','4701','4701',1,1,'I','The server port for incoming client connections (such as management console).','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Client.MinVersion','','',1,0,'S','Minimal client version allowed for connection to this server.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Client.MinViewRefreshInterval','300','300',1,0,'I','Minimal interval between view refresh in milliseconds (hint for client).','milliseconds');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Client.ObjectBrowser.AutoApplyFilter','1','1',1,0,'B','Enable or disable object browser''s filter applying as user types (if disabled, user has to press ENTER to apply filter).','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Client.ObjectBrowser.FilterDelay','300','300',1,0,'I','Delay between typing in object browser''s filter and applying it to object tree.','milliseconds');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Client.ObjectBrowser.MinFilterStringLength','1','1',1,0,'I','Minimal length of filter string in object browser required for automatic apply.','characters');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Client.ObjectBrowser.ShowTargetsUnderTemplates','0','0',1,0,'B','If enabled, template target objects (nodes, access points, etc.) will be shown under templates applied to those objects.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Client.ObjectOverview.ShowCommentsOnlyIfPresent','1','1',1,0,'B','If enabled, comments section in object overview will only be shown when object comments are not empty.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Client.TileServerURL','https://tile.netxms.org/osm/','http://tile.netxms.org/osm/',1,0,'S','The base URL for the tile server.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('DBConnectionPool.BaseSize','10','10',1,1,'I','A number of connections to the database created on the server startup.','connections');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('DBConnectionPool.CooldownTime','300','300',1,1,'I','Inactivity time (in seconds) after which database connection will be closed.','seconds');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('DBConnectionPool.MaxLifetime','14400','14400',1,1,'I','Maximum lifetime (in seconds) for a database connection.','seconds');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('DBConnectionPool.MaxSize','30','30',1,1,'I','A maximum number of connections in the connection pool.','connections');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('DBLockInfo','','',0,0,'S','','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('DBLockPID','0','0',0,0,'I','','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('DBLockStatus','UNLOCKED','UNLOCKED',0,1,'S','','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('DBWriter.BackgroundWorkers','1','1',1,1,'I','Number of background workers for DCI data writer.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('DBWriter.DataQueues','1','1',1,1,'I','Number of queues for DCI data writer.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('DBWriter.InsertParallelismDegree','1','1',1,1,'I','Degree of parallelism for INSERT statements executed by DCI data writer (only valid for TimescaleDB).','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('DBWriter.HouseKeeperInterlock','0','0',1,0,'C','Controls if server should block background write of collected performance data while housekeeper deletes expired records.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('DBWriter.MaxQueueSize','0','0',1,0,'I','Maximum size for DCI data writer queue (0 to disable size limit). If writer queue size grows above that threshold any new data will be dropped until queue size drops below threshold again.','elements');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('DBWriter.MaxRecordsPerStatement','100','100',1,1,'I','Maximum number of records per one SQL statement for delayed database writes','records/statement');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('DBWriter.MaxRecordsPerTransaction','1000','1000',1,1,'I','Maximum number of records per one transaction for delayed database writes','records/transaction');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('DBWriter.RawDataFlushInterval','30','30',1,1,'I','Interval between writes of accumulated raw DCI data to database.','seconds');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('DBWriter.UpdateParallelismDegree','1','1',1,1,'I','Degree of parallelism for UPDATE statements executed by raw DCI data writer.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('DataCollection.ApplyDCIFromTemplateToDisabledDCI','1','1',1,1,'B','Enable applying all DCIs from a template to the node, including disabled ones.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('DataCollection.DefaultDCIPollingInterval','60','60',1,0,'I','Default polling interval for newly created DCI (in seconds).','seconds');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('DataCollection.DefaultDCIRetentionTime','30','30',1,0,'I','Default retention time for newly created DCI (in days).','days');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('DataCollection.InstancePollingInterval','600','600',1,0,'I','Instance polling interval (in seconds).','seconds');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('DataCollection.InstanceRetentionTime','7','7',1,0,'I','Default retention time (in days) for missing DCI instances','days');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('DataCollection.OfflineDataRelevanceTime','86400','86400',1,1,'I','Time period in seconds within which received offline data still relevant for threshold validation.','seconds');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('DataCollection.OnDCIDelete.TerminateRelatedAlarms','1','1',1,0,'B','Enable/disable automatic termination of related alarms when data collection item is deleted.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('DataCollection.Scheduler.RequireConnectivity','0','0',1,1,'B','Skip data collection scheduling if communication channel is unavailable.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('DataCollection.ScriptErrorReportInterval','86400','86400',1,0,'I','Minimal interval between reporting errors in data collection related script.','seconds');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('DataCollection.StartupDelay','0','0',1,1,'B','Enable/disable randomized data collection delays on server startup for evening server load distribution.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('DataCollection.TemplateRemovalGracePeriod','0','0',1,0,'I','Setting up grace period for removing templates from target','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('DataCollection.ThresholdRepeatInterval','0','0',1,1,'I','System-wide interval in seconds for resending threshold violation events. Value of 0 disables event resending.','seconds');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('DefaultNotificationChannel.SMTP.Html','SMTP-HTML','SMTP-HTML',1,0,'S','Default notification channel for SMTP HTML formatted messages','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('DefaultNotificationChannel.SMTP.Text','SMTP-Text','SMTP-Text',1,0,'S','Default notification channel for SMTP Text formatted messages','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('DowntimeLog.RetentionTime','90','90',1,0,'I','Retention time in days for the records in downtime log. All records older than specified will be deleted by housekeeping process.','days');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('EnableISCListener','0','0',1,1,'B','Enable/disable Inter-Server Communications Listener.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Events.Correlation.TopologyBased','1','1',1,0,'B','Enable/disable topology based event correlation.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Events.DeleteEventsOfDeletedObject','1','1',1,0,'B','Enable/disable automatic event removal of an object when it is deleted.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Events.LogRetentionTime','90','90',1,0,'I','Retention time in days for the records in event log. All records older than specified will be deleted by housekeeping process.','days');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Events.Processor.PoolSize','1','1',1,1,'I','Number of threads for parallel event processing.','threads');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Events.Processor.QueueSelector','%z','%z',1,1,'S','Queue selector for parallel event processing.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Events.ReceiveForwardedEvents','0','0',1,0,'B','Enable/disable reception of events forwarded by another NetXMS server. Please note that for external event reception ISC listener should be enabled as well.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('EventStorm.Duration','15','15',1,1,'I','Time period for events per second to be above threshold that defines event storm condition.','seconds');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('EventStorm.EnableDetection','0','0',1,1,'B','Enable/disable event storm detection.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('EventStorm.EventsPerSecond','1000','1000',1,1,'I','Threshold for number of events per second that defines event storm condition.','events/second');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('FirstFreeDCIId','1','1',0,1,'I','','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('FirstFreeObjectId','100','100',0,1,'I','','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Geolocation.History.RetentionTime','90','90',1,0,'I','Retention time in days for object''s geolocation history. All records older than specified will be deleted by housekeeping process.','days');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('HelpDeskLink','none','none',1,1,'S','Helpdesk driver name. If set to none, then no helpdesk driver is in use.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Housekeeper.DisableCollectedDataCleanup','0','0',1,0,'B','Disable automatic cleanup of collected DCI data during housekeeper run.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Housekeeper.StartTime','02:00','02:00',1,1,'S','Time when housekeeper starts. Housekeeper deletes expired log records and DCI data as well as cleans removed objects.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Housekeeper.Throttle.HighWatermark','250000','250000',1,0,'I','High watermark for housekeeper throttling','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Housekeeper.Throttle.LowWatermark','50000','50000',1,0,'I','Low watermark for housekeeper throttling','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('ICMP.CollectPollStatistics','1','1',1,0,'B','Collect ICMP poll statistics for all nodes by default. When enabled ICMP ping is used on each status poll and response time and packet loss are collected.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('ICMP.PingSize','46','46',1,0,'I','Size of ICMP packets (in bytes, including IP header size) used for polls.','bytes');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('ICMP.PingTimeout','1500','1500',1,0,'I','Timeout for ICMP ping used for status polls (in milliseconds).','milliseconds');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('ICMP.PollingInterval','60','60',1,0,'I','Interval between ICMP polls (in seconds).','seconds');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('ICMP.StatisticPeriod','60','60',1,0,'I','Time period for collecting ICMP statistics (in number of polls).','polls');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Jira.IssueType','Task','Task',1,0,'S','Jira issue type.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Jira.Login','netxms','netxms',1,0,'S','Jira login name.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Jira.Password','','',1,0,'P','Jira password.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Jira.ProjectCode','NETXMS','NETXMS',1,0,'S','Jira project code.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Jira.ProjectComponent','','',1,0,'S','Jira project component.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Jira.ResolvedStatus','Done','Done',1,0,'S','Comma separated list of issue status codes indicating that issue is resolved.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Jira.ServerURL','https://jira.atlassian.com','https://jira.atlassian.com',1,0,'S','The URL of the Jira server.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Jira.Webhook.Path','/jira-webhook','/jira-webhook',1,1,'S','Path part of Jira webhook URL (must start with /).','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Jira.Webhook.Port','8008','8008',1,1,'I','Jira webhook listener port (0 to disable webhook).','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('LDAP.ConnectionString','ldap://localhost:389','ldap://localhost:389',1,0,'S','The LdapConnectionString configuration parameter may be a comma- or whitespace-separated list of URIs containing only the schema, the host, and the port fields. Format: schema://host:port.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('LDAP.GroupClass','','',1,0,'S','Specifies which object class represents group objects. If the found entry is not of user or group class, it will be ignored.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('LDAP.GroupUniqueId','','',1,0,'S','Unique identifier for LDAP group object. If not set, LDAP users are identified by DN.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('LDAP.Mapping.Description','','',1,0,'S','The name of an attribute whose value will be used as a user''s description.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('LDAP.Mapping.Email','','',1,0,'S','The name of an attribute whose value will be used as a user''s email.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('LDAP.Mapping.FullName','displayName','displayName',1,0,'S','The name of an attribute whose value will be used as a user''s full name.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('LDAP.Mapping.GroupName','','',1,0,'S','The name of an attribute whose value will be used as a group''s login name.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('LDAP.Mapping.PhoneNumber','','',1,0,'S','The name of an attribute whose value will be used as a user''s phone number.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('LDAP.Mapping.UserName','','',1,0,'S','The name of an attribute whose value will be used as a user''s login name.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('LDAP.NewUserAuthMethod','5','5',1,0,'C','Authentication method to be set for user objects created by LDAP synchronization process.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('LDAP.PageSize','1000','1000',1,0,'I','The maximum amount of records that can be returned in one search page.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('LDAP.SearchBase','','',1,0,'S','The DN of the entry at which to start the search.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('LDAP.SearchFilter','','',1,0,'S','A string representation of the filter to apply in the search.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('LDAP.SyncInterval','0','0',1,0,'I','The synchronization interval (in minutes) between the NetXMS server and the LDAP server. If the parameter is set to 0, no synchronization will take place.','minutes');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('LDAP.SyncUser','','',1,0,'S','User login for LDAP synchronization.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('LDAP.SyncUserPassword','','',1,0,'P', 'User password for LDAP synchronization.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('LDAP.UserClass','','',1,0,'S','The object class which represents user objects. If the found entry is not of user or group class, it will be ignored.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('LDAP.UserDeleteAction','1','1',1,0,'C','This parameter specifies what should be done while synchronizing with a deleted user/group from LDAP.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('LDAP.UserUniqueId','','',1,0,'S','Unique identifier for LDAP user object. If not set, LDAP users are identified by DN.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('LongRunningQueryThreshold','0','0',1,1,'I','Threshold in milliseconds to report long running SQL queries (0 to disable)','milliseconds');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('MaintenanceJournal.RetentionTime','1826','1826',1,0,'I','Retention time in days for maintenance journal entries. All records older than specified will be deleted by housekeeping process.','days');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('MobileDeviceListenerPort','4747','4747',1,1,'I','Listener port for connections from mobile agent.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('NetworkDeviceDrivers.BlackList','','',1,1,'S','Comma separated list of blacklisted network device drivers.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('NetworkDiscovery.ActiveDiscovery.BlockSize','1024','1024',1,0,'I','Block size for active discovery.','addresses');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('NetworkDiscovery.ActiveDiscovery.EnableSNMPProbing','1','1',1,0,'B','Enable/disable SNMP probing during active network discovery. If enabled, server will send SNMP requests to detect devices that repond to SNMP but not to ICMP pings.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('NetworkDiscovery.ActiveDiscovery.EnableTCPProbing','0','0',1,0,'B','Enable/disable TCP probing during active network discovery. If enabled, server will try to establish TCP connection to list of well-known port to detect devices that are not responding to ICMP pings.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('NetworkDiscovery.ActiveDiscovery.InterBlockDelay','0','0',1,0,'I','Interval in milliseconds between scanning address blocks during active discovery.','milliseconds');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('NetworkDiscovery.ActiveDiscovery.Interval','7200','7200',1,0,'I','Interval in seconds between active network discovery polls.','seconds');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('NetworkDiscovery.ActiveDiscovery.Schedule','','',1,0,'S','Schedule used to start active network discovery poll in cron format.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('NetworkDiscovery.DisableProtocolProbe.Agent','0','0',1,0,'B','Disable probing discovered addresses for NetXMS agent.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('NetworkDiscovery.DisableProtocolProbe.EtherNetIP','0','0',1,0,'B','Disable probing discovered addresses for EtherNet/IP support.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('NetworkDiscovery.DisableProtocolProbe.SNMP.V1','0','0',1,0,'B','Disable SNMP version 1 when probing discovered addresses for SNMP support.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('NetworkDiscovery.DisableProtocolProbe.SNMP.V2','0','0',1,0,'B','Disable SNMP version 2 when probing discovered addresses for SNMP support.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('NetworkDiscovery.DisableProtocolProbe.SNMP.V3','0','0',1,0,'B','Disable SNMP version 3 when probing discovered addresses for SNMP support.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('NetworkDiscovery.DisableProtocolProbe.SSH','0','0',1,0,'B','Disable probing discovered addresses for SSH support.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('NetworkDiscovery.Filter.Flags','0','0',1,0,'I','Discovery filter settings.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('NetworkDiscovery.Filter.Script','none','none',1,0,'S','Name of discovery filter script from script library.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('NetworkDiscovery.MergeDuplicateNodes','0','0',1,0,'B','Enable/disable merge of duplicate nodes. When enabled, configuration of duplicate node(s) will be merged into original node and duplicate(s) will be deleted.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('NetworkDiscovery.PassiveDiscovery.Interval','900','900',1,0,'I','Interval in seconds between passive network discovery polls.','seconds');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('NetworkDiscovery.Type','0','0',1,1,'C','Type of the network discovery.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('NetworkDiscovery.UseDNSNameForDiscoveredNodes','0','0',1,0,'B','Enable/disable the use of DNS name instead of IP address as primary name for newly discovered nodes.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('NetworkDiscovery.UseFQDNForNodeNames','1','1',1,1,'B','Enable/disable the use of fully qualified domain names as primary names for newly discovered nodes.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('NetworkDiscovery.UseSNMPTraps','0','0',1,1,'B','Use SNMP trap information for new node discovery.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('NetworkDiscovery.UseSyslog','0','0',1,1,'B','Use syslog messages for new node discovery.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('NotificationChannels.MaxRetryCount','30','30',1,0,'I','Maximum count of retries to send a message for all notification channels.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('NotificationLog.RetentionTime','90','90',1,0,'I','Retention time in days for the records in notification log. All records older than specified will be deleted by housekeeping process.','days');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('NXSL.EnableContainerFunctions','1','1',1,0,'B','Enable/disable server-side NXSL functions for containers (such as CreateContainer, BindObject, etc.).','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('NXSL.EnableFileIOFunctions','0','0',1,1,'B','Enable/disable server-side NXSL functions for file I/O (such as OpenFile, DeleteFile, etc.).','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Objects.AccessPoints.ContainerAutoBind','0','0',1,0,'B','Enable/disable container auto binding for access points.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Objects.AccessPoints.RetentionTime','72','72',1,0,'I','Retention time for disappeared access points.','hours');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Objects.AccessPoints.TemplateAutoApply','0','0',1,0,'B','Enable/disable template auto apply for access points.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Objects.Assets.AllowDeleteIfLinked','0','0',1,0,'B','Enable/disable deletion of linked assets.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Objects.AutobindOnConfigurationPoll','1','1',1,0,'B','Enable/disable automatic object binding on configuration polls.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Objects.AutobindPollingInterval','3600','3600',1,0,'I','Interval in seconds between automatic object binding polls.','seconds');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Objects.Clusters.ContainerAutoBind','0','0',1,0,'B','Enable/disable container auto binding for clusters.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Objects.Clusters.TemplateAutoApply','0','0',1,0,'B','Enable/disable template auto apply for clusters.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Objects.Collectors.ContainerAutoBind','0','0',1,0,'B','Enable/disable container auto binding for collectors.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Objects.Collectors.TemplateAutoApply','0','0',1,0,'B','Enable/disable template auto apply for collectors.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Objects.Conditions.PollingInterval','60','60',1,0,'I','Interval in seconds between polling (re-evaluating) of condition objects.','seconds');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Objects.ConfigurationPollingInterval','3600','3600',1,0,'I','Interval in seconds between configuration polls.','seconds');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Objects.DeleteUnreachableNodesPeriod','0','0',1,0,'I','Delete nodes which were unreachable for a number of days specified by this parameter.','days');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Objects.EnableZoning','1','1',1,1,'B','Enable/disable zoning support','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Objects.Interfaces.ClearPeerOnUnmanage','0','0',1,0,'B','If set to true, interface peer will be cleared when interface is unmanaged.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Objects.Interfaces.DefaultExpectedState','1','1',1,0,'C','Default expected state for new interface objects.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Objects.Interfaces.Enable8021xStatusPoll','1','1',1,0,'B','Globally enable or disable checking of 802.1x port state during status poll.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Objects.Interfaces.IgnoreIfNotPresent','0','0',1,0,'B','If enabled, interfaces in "NOT PRESENT" state will be ignored when read from device.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Objects.Interfaces.NamePattern','','',1,0,'S','Custom name pattern for interface objects.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Objects.Interfaces.PeerRetentionTime','30','30',1,0,'I','Retention time for peer information which is no longer confirmed by polls.','days');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Objects.Interfaces.UseAliases','0','0',1,0,'C','Control usage of interface aliases (or descriptions).','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Objects.Interfaces.UseIfXTable','1','1',1,0,'B','Enable/disable the use of SNMP ifXTable instead of ifTable for interface configuration polling.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Objects.Maintenance.PredefinedPeriods','1h,8h,1d','1h,8h,1d',1,0,'S','Predefined object maintenance periods. Use m for minutes, h for hours and d for days.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Objects.MobileDevices.ContainerAutoBind','0','0',1,0,'B','Enable/disable container auto binding for mobile devices.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Objects.MobileDevices.TemplateAutoApply','0','0',1,0,'B','Enable/disable template auto apply for mobile devices.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Objects.NetworkMaps.DefaultBackgroundColor','0xffffff','0xffffff',1,0,'H','Default background color for new network map objects.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Objects.NetworkMaps.DefaultHeight','850','850',1,0,'I','Default network map height.','pixels');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Objects.NetworkMaps.DefaultWidth','1300','1300',1,0,'I','Default network map width.','pixels');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Objects.NetworkMaps.UpdateInterval','60','60',1,0,'I','Interval in seconds between automatic map updates.','seconds');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Objects.Nodes.CapabilityExpirationGracePeriod','3600','3600',1,0,'I','Grace period for capability expiration after node recovered from unreachable state.','seconds');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Objects.Nodes.CapabilityExpirationTime','604800','604800',1,0,'I','Time before capability (NetXMS Agent, SNMP, EtherNet/IP) expires if node is not responding for requests via appropriate protocol.','seconds');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Objects.Nodes.ConfigurationPoll.AlwaysCheckSNMP','1','1',1,0,'B','Always check possible SNMP credentials during configuration poll, even if node is marked as unreachable via SNMP.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Objects.Nodes.FallbackToLocalResolver','0','0',1,0,'B','Fallback to server''s local resolver if node address cannot be resolved via zone proxy.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Objects.Nodes.ReadWinPerfCountersOnDemand','1','1',1,0,'B','If set to true, list of supported Windows performance counters will be read only when requested by client, otherwise at each configuration poll.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Objects.Nodes.ResolveDNSToIPOnStatusPoll','0','0',1,0,'C','Resolve DNS to IP on status poll.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Objects.Nodes.ResolveDNSToIPOnStatusPoll.Interval','0','0',1,0,'I','Number of status polls between resolving primary host name to IP, if Objects.Nodes.ResolveDNSToIPOnStatusPoll set to "Always".','polls');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Objects.Nodes.ResolveNames','1','1',1,0,'B','Resolve node name using DNS, SNMP system name, or host name if current node name is it''s IP address.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Objects.Nodes.Resolver.AddressFamilyHint','0','0',1,0,'C','Address family hint for node DNS name resolver.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Objects.Nodes.SyncNamesWithDNS','0','0',1,0,'B','Enable/disable synchronization of node names with DNS on each configuration poll.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Objects.PollCountForStatusChange','1','1',1,1,'I','The number of consecutive unsuccessful polls required to declare interface as down.','polls');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Objects.ResponsibleUsers.AllowedTags','','',1,0,'S','Allowed tags for responsible users (comma separated list).','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Objects.Security.CheckTrustedObjects','0','0',1,0,'B','Enable/disable trusted objects check for cross-object access.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Objects.Sensors.ContainerAutoBind','0','0',1,0,'B','Enable/disable container auto binding for sensors.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Objects.Sensors.TemplateAutoApply','0','0',1,0,'B','Enable/disable template auto apply for sensors.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Objects.StatusCalculation.CalculationAlgorithm','1','1',1,1,'C','Default algorithm for calculation object status from it''s DCIs, alarms and child objects.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Objects.StatusCalculation.FixedStatusValue','0','0',1,1,'I','Value for status propagation if StatusPropagationAlgorithm server configuration parameter is set to 2 (Fixed).','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Objects.StatusCalculation.PropagationAlgorithm','1','1',1,1,'C','Algorithm for status propagation (how object''s status affects its child object statuses).','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Objects.StatusCalculation.Shift','0','0',1,1,'I','Status shift value for Relative propagation algorithm.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Objects.StatusCalculation.SingleThreshold','75','75',1,1,'I','Threshold value for Single threshold status calculation algorithm.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Objects.StatusCalculation.Thresholds','503C2814','503C2814',1,1,'S','Threshold values for Multiple thresholds status calculation algorithm.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Objects.StatusCalculation.Translation','01020304','01020304',1,1,'S','Values for Translated status propagation algorithm.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Objects.StatusPollingInterval','60','60',1,0,'I','Interval in seconds between status polls.','seconds');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Objects.Subnets.DefaultSubnetMaskIPv4','24','24',1,0,'I','Default mask for synthetic IPv4 subnets.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Objects.Subnets.DefaultSubnetMaskIPv6','64','64',1,0,'I','Default mask for synthetic IPv6 subnets.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Objects.Subnets.DeleteEmpty','0','0',1,0,'B','Enable/disable automatic deletion of subnet objects without any nodes within.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Objects.SyncInterval','60','60',1,1,'I','Interval in seconds between writing object changes to the database.','seconds');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('PackageDeployment.JobRetentionTime','7','7',1,0,'I','Retention time in days for completed package deployment jobs. All completed jobs older than specified will be deleted by housekeeping process.','days');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('PackageDeployment.LogRetentionTime','90','90',1,0,'I','Retention time in days for package deployment log. All records older than specified will be deleted by housekeeping process.','days');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('PackageDeployment.MaxThreads','25','25',1,1,'I','Maximum number of threads used for package deployment.','threads');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('RADIUS.AuthMethod','PAP','PAP',1,0,'S','RADIUS authentication method to be used (PAP, CHAP, MS-CHAPv1, MS-CHAPv2).','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('RADIUS.NASIdentifier','','',1,0,'S','Value for NAS-Identifier attribute in RADIUS reuest (will not be sent if empty).','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('RADIUS.NumRetries','5','5',1,0,'I','The number of retries for RADIUS authentication.','retries');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('RADIUS.Port','1645','1645',1,0,'I','Port number used for connection to primary RADIUS server.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('RADIUS.SecondaryPort','1645','1645',1,0,'I','Port number used for connection to secondary RADIUS server.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('RADIUS.SecondarySecret','netxms','netxms',1,0,'P','Shared secret used for communication with secondary RADIUS server.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('RADIUS.SecondaryServer','none','none',1,0,'S','Host name or IP address of secondary RADIUS server.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('RADIUS.Secret','netxms','netxms',1,0,'P','Shared secret used for communication with primary RADIUS server.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('RADIUS.Server','none','none',1,0,'S','Host name or IP address of primary RADIUS server.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('RADIUS.ServiceType','8','8',1,0,'I','Value for Service-Type attribute in RADIUS request. Value of 0 will exclude service type from request attributes.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('RADIUS.Timeout','3','3',1,0,'I','Timeout in seconds for requests to RADIUS server.','seconds');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('ReportingServer.Enable','0','0',1,1,'B','Enable/disable reporting server.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('ReportingServer.JDBC.Properties','','',1,0,'S','Additional properties for JDBC connector on reporting server.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('ReportingServer.Hostname','127.0.0.1','127.0.0.1',1,1,'S','The hostname of the reporting server.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('ReportingServer.Port','4710','4710',1,1,'I','The port of the reporting server.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('ReportingServer.ResultsRetentionTime','90','90',1,1,'I','The retention time for report execution results.','days');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Scheduler.TaskRetentionTime','86400','86400',1,0,'I','Retention time for completed non-recurrent scheduled tasks. Such tasks will be deleted automatically after given number of seconds since completion time.','seconds');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Server.AllowedCiphers','63','63',1,1,'I','A bitmask for encryption algorithms allowed in the server (sum the values to allow multiple algorithms at once): 1 = AES256, 2 = Blowfish-256, 4 = IDEA, 8 = 3DES, 16 = AES128, 32 = Blowfish-128)','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Server.Color','','',1,0,'H','Identification color for this server','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Server.CommandOutputTimeout','60','60',1,0,'I','Time (in seconds) to wait for output of a local command object tool.','seconds');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Server.EscapeLocalCommands','0','0',1,0,'B','Enable/disable TAB and new line characters replacement by escape sequence in "execute command on management server" actions.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Server.ImportConfigurationOnStartup','1','1',1,1,'C','Import configuration from local files on server startup.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Server.MessageOfTheDay','','',1,0,'S','Message to be shown when a user logs into the console.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Server.Name','','',1,0,'S','Name of this server.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Server.RoamingMode','1','1',1,0,'B','Enable/disable roaming mode for server (when server can be disconnected from one network and connected to another or IP address of the server can change).','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Server.Security.2FA.TrustedDeviceTTL','0','0',1,0,'I','TTL in seconds for 2FA trusted device.','seconds');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Server.Security.CaseInsensitiveLoginNames','0','0',1,1,'B','Enable/disable case insensitive login names.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Server.Security.ExtendedLogQueryAccessControl','0','0',1,0,'B','Enable/disable extended access control in log queries.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Server.Security.GraceLoginCount','5','5',1,0,'I','User grace login count.','logins');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Server.Security.IntruderLockoutThreshold','0','0',1,0,'I','Number of incorrect password attempts after which a user account is temporarily locked.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Server.Security.IntruderLockoutTime','30','30',1,0,'I','Duration of user account temporarily lockout (in minutes) if allowed number of incorrect password attempts was exceeded.','seconds');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Server.Security.MinPasswordLength','0','0',1,0,'I','Default minimum password length for a NetXMS user. The default applied only if per-user setting is not defined.','characters');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Server.Security.PasswordComplexity','0','0',1,0,'I','Set of flags to enforce password complexity.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Server.Security.PasswordExpiration','0','0',1,0,'I','Password expiration time in days. If set to 0, password expiration is disabled.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Server.Security.PasswordHistoryLength','0','0',1,0,'I','Number of previous passwords to keep. Users are not allowed to set password if it matches one from previous passwords list.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Server.Security.RestrictLocalConsoleAccess','1','1',1,0,'B','If enabled, restrict access to local server console only to authenticated users with server console access rights.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('SNMP.Agent.AllowedVersions','7','7',1,0,'I','A bitmask for SNMP versions allowed by built-in SNMP agent (sum the values to allow multiple versions at once): 1 = version 1, 2 = version 2c, 4 = version 3).','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('SNMP.Agent.CommunityString','public','public',1,0,'S','Community string for SNMPv1/v2 requests to built-in SNMP agent.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('SNMP.Agent.Enable','0','0',1,1,'B','Enable/disable built-in SNMP agent.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('SNMP.Agent.ListenerPort','161','161',1,1,'I','Port used by built-in SNMP agent.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('SNMP.Agent.V3.AuthenticationMethod','0','0',1,0,'C','Authentication method for SNMPv3 requests to built-in SNMP agent.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('SNMP.Agent.V3.AuthenticationPassword','','',1,0,'P','Authentication password for SNMPv3 requests to built-in SNMP agent.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('SNMP.Agent.V3.EncryptionMethod','0','0',1,0,'C','Encryption method for SNMPv3 requests to built-in SNMP agent.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('SNMP.Agent.V3.EncryptionPassword','','',1,0,'P','Encryption password for SNMPv3 requests to built-in SNMP agent.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('SNMP.Agent.V3.UserName','netxms','netxms',1,0,'S','User name for SNMPv3 requests to built-in SNMP agent.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('SNMP.Codepage','','',1,0,'S','Default server SNMP codepage.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('SNMP.Discovery.SeparateProbeRequests','0','0',1,0,'B','Use separate SNMP request for each test OID.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('SNMP.EngineId','80:00:DF:4B:05:20:10:08:04:02:01:00','80:00:DF:4B:05:20:10:08:04:02:01:00',1,1,'S','Server''s SNMP engine ID.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('SNMP.RequestTimeout','1500','1500',1,1,'I','Timeout in milliseconds for SNMP requests sent by NetXMS server.','milliseconds');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('SNMP.RetryCount','3','3',1,1,'I','Number of retries for SNMP requests sent by NetXMS server.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('SNMP.Traps.AllowVarbindsConversion','1','1',1,0,'B','Allows/disallows conversion of SNMP trap OCTET STRING varbinds into hex strings if they contain non-printable characters.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('SNMP.Traps.Enable','1','1',1,1,'B','Enable/disable SNMP trap processing.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('SNMP.Traps.ListenerPort','162','162',1,1,'I','Port used for SNMP traps.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('SNMP.Traps.LogAll','0','0',1,0,'B','Log all SNMP traps (even those received from addresses not belonging to any known node).','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('SNMP.Traps.LogRetentionTime','90','90',1,0,'I','Retention time in days for logged SNMP traps. All SNMP trap records older than specified will be deleted by housekeeping process.','days');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('SNMP.Traps.ProcessUnmanagedNodes','0','0',1,0,'B','Enable/disable processing of SNMP traps received from unmanaged nodes.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('SNMP.Traps.RateLimit.Threshold','0','0',1,0,'I','Threshold for number of SNMP traps per second that defines SNMP trap flood condition. Detection is disabled if 0 is set.','seconds');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('SNMP.Traps.RateLimit.Duration','15','15',1,0,'I','Time period for SNMP traps per second to be above threshold that defines SNMP trap flood condition.','seconds');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('SNMP.Traps.SourcesInAllZones','0','0',1,1,'B','Search all zones to match trap/syslog source address to node.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('SNMP.Traps.UnmatchedTrapEvent','1','1',1,0,'B','Enable/disable generation of default event for unmatched SNMP traps.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Syslog.AllowUnknownSources','0','0',1,0,'B','Enable or disable processing of syslog messages from unknown sources.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Syslog.Codepage','','',1,0,'S','Default server syslog codepage.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Syslog.EnableListener','0','0',1,1,'B','Enable/disable local syslog listener.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Syslog.EnableStorage','1','1',1,0,'B','Enable/disable local storage of received syslog messages in NetXMS database.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Syslog.IgnoreMessageTimestamp','0','0',1,0,'B','Ignore timestamp received in syslog messages and always use server time.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Syslog.ListenPort','514','514',1,1,'I','UDP port used by built-in syslog server.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Syslog.NodeMatchingPolicy','0','0',1,1,'C','Node matching policy for built-in syslog daemon.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Syslog.ParseUnknownSourceMessages','0','0',1,0,'B','Enable or disable parsing of syslog messages received from unknown sources.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Syslog.RetentionTime','90','90',1,0,'I','Retention time in days for stored syslog messages. All messages older than specified will be deleted by housekeeping process.','days');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('ThreadPool.Agent.BaseSize','32','32',1,1,'I','Base size for agent connector thread pool','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('ThreadPool.Agent.MaxSize','256','256',1,1,'I','Maximum size for agent connector thread pool','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('ThreadPool.AITasks.BaseSize','4','4',1,1,'I','Base size for AI tasks thread pool.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('ThreadPool.AITasks.MaxSize','16','16',1,1,'I','Maximum size for AI tasks thread pool.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('ThreadPool.DataCollector.BaseSize','10','10',1,1,'I','Base size for data collector thread pool.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('ThreadPool.DataCollector.MaxSize','250','250',1,1,'I','Maximum size for data collector thread pool.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('ThreadPool.Discovery.BaseSize','8','8',1,1,'I','Base size for network discovery thread pool.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('ThreadPool.Discovery.MaxSize','64','64',1,1,'I','Maximum size for network discovery thread pool.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('ThreadPool.FileTransfer.BaseSize','2','2',1,1,'I','Base size for file transfer thread pool','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('ThreadPool.FileTransfer.MaxSize','16','16',1,1,'I','Maximum size for file transfer thread pool','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('ThreadPool.Main.BaseSize','8','8',1,1,'I','Base size for main server thread pool','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('ThreadPool.Main.MaxSize','256','256',1,1,'I','Maximum size for main server thread pool','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('ThreadPool.Poller.BaseSize','10','10',1,1,'I','Base size for poller thread pool','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('ThreadPool.Poller.MaxSize','250','250',1,1,'I','Maximum size for poller thread pool','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('ThreadPool.Scheduler.BaseSize','1','1',1,1,'I','Base size for scheduler thread pool','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('ThreadPool.Scheduler.MaxSize','64','64',1,1,'I','Maximum size for scheduler thread pool','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('ThreadPool.Syncer.BaseSize','1','1',1,1,'I','Base size for syncer thread pool','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('ThreadPool.Syncer.MaxSize','1','1',1,1,'I','Maximum size for syncer thread pool (value of 1 will disable pool creation)','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Topology.AdHocRequest.ExpirationTime','900','900',1,0,'I','Ad-hoc network topology request expiration time. Server will use cached result of previous request if it is newer than given interval.','seconds');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,is_public,data_type,description,units) VALUES ('Topology.AdHocRequest.IncludePhysicalLinks','0','0',1,0,'Y','B','If set to true, physical links will be added to ad-hoc L2 maps.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Topology.DefaultDiscoveryRadius','5','5',1,0,'I','Default number of hops from seed node to be added to topology map.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Topology.PollingInterval','1800','1800',1,0,'I','Interval in seconds between topology polls.','seconds');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Topology.RoutingTable.MaxSize','4000','4000',1,0,'I','Maximum retrievable routing table size. Larger routing tables will not be retrieved from devices.','records');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('Topology.RoutingTable.UpdateInterval','300','300',1,0,'I','Interval in seconds between reading routing table from node.','seconds');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,is_public,data_type,description,units) VALUES ('UserAgent.DefaultMessageRetentionTime','10080','10080',1,0,'Y','I','Default user agent message retention time (in minutes).','minutes');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('UserAgent.RetentionTime','30','30',1,0,'I','User agent message historical data retention time (in days).','days');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('WindowsEvents.EnableStorage','1','1',1,0,'B','Enable/disable local storage of received Windows events in NetXMS database.','');
+INSERT INTO config (var_name,var_value,default_value,is_visible,need_server_restart,data_type,description,units) VALUES ('WindowsEvents.LogRetentionTime','90','90',1,0,'I','Retention time in days for records in Windows event log. All records older than specified will be deleted by housekeeping process.','days');
+
+/*
+** Config possible values
+*/
+INSERT INTO config_values (var_name,var_value) VALUES ('Client.ListenerPort','65535');
+INSERT INTO config_values (var_name,var_value) VALUES ('AuditLog.External.Port','65535');
+INSERT INTO config_values (var_name,var_value) VALUES ('MobileDeviceListenerPort','65535');
+INSERT INTO config_values (var_name,var_value) VALUES ('RADIUS.Port','65535');
+INSERT INTO config_values (var_name,var_value) VALUES ('RADIUS.SecondaryPort','65535');
+INSERT INTO config_values (var_name,var_value) VALUES ('ReportingServer.Port','65535');
+INSERT INTO config_values (var_name,var_value) VALUES ('SNMP.Agent.ListenerPort','65535');
+INSERT INTO config_values (var_name,var_value) VALUES ('SNMP.Traps.ListenerPort','65535');
+INSERT INTO config_values (var_name,var_value) VALUES ('Syslog.ListenPort','65535');
+INSERT INTO config_values (var_name,var_value) VALUES ('XMPP.Port','65535');
+INSERT INTO config_values (var_name,var_value) VALUES ('Server.AllowedCiphers','63');
+INSERT INTO config_values (var_name,var_value,var_description) VALUES ('Agent.DefaultCacheMode','1','On');
+INSERT INTO config_values (var_name,var_value,var_description) VALUES ('Agent.DefaultCacheMode','2','Off');
+INSERT INTO config_values (var_name,var_value,var_description) VALUES ('Agent.DefaultEncryptionPolicy','0','Disabled');
+INSERT INTO config_values (var_name,var_value,var_description) VALUES ('Agent.DefaultEncryptionPolicy','1','Allowed');
+INSERT INTO config_values (var_name,var_value,var_description) VALUES ('Agent.DefaultEncryptionPolicy','2','Preferred');
+INSERT INTO config_values (var_name,var_value,var_description) VALUES ('Agent.DefaultEncryptionPolicy','3','Required');
+INSERT INTO config_values (var_name,var_value,var_description) VALUES ('Agent.DefaultProtocolCompressionMode','1','Enabled');
+INSERT INTO config_values (var_name,var_value,var_description) VALUES ('Agent.DefaultProtocolCompressionMode','2','Disabled');
+INSERT INTO config_values (var_name,var_value,var_description) VALUES ('AgentTunnels.TLS.MinVersion','0','1.0');
+INSERT INTO config_values (var_name,var_value,var_description) VALUES ('AgentTunnels.TLS.MinVersion','1','1.1');
+INSERT INTO config_values (var_name,var_value,var_description) VALUES ('AgentTunnels.TLS.MinVersion','2','1.2');
+INSERT INTO config_values (var_name,var_value,var_description) VALUES ('AgentTunnels.TLS.MinVersion','3','1.3');
+INSERT INTO config_values (var_name,var_value,var_description) VALUES ('AgentTunnels.UnboundTunnelTimeoutAction','0','Reset tunnel');
+INSERT INTO config_values (var_name,var_value,var_description) VALUES ('AgentTunnels.UnboundTunnelTimeoutAction','1','Generate event');
+INSERT INTO config_values (var_name,var_value,var_description) VALUES ('AgentTunnels.UnboundTunnelTimeoutAction','2','Bind tunnel to existing node');
+INSERT INTO config_values (var_name,var_value,var_description) VALUES ('AgentTunnels.UnboundTunnelTimeoutAction','3','Bind tunnel to existing node or create new node');
+INSERT INTO config_values (var_name,var_value,var_description) VALUES ('BusinessServices.Check.Threshold.DataCollection','1','Warning');
+INSERT INTO config_values (var_name,var_value,var_description) VALUES ('BusinessServices.Check.Threshold.DataCollection','2','Minor');
+INSERT INTO config_values (var_name,var_value,var_description) VALUES ('BusinessServices.Check.Threshold.DataCollection','3','Major');
+INSERT INTO config_values (var_name,var_value,var_description) VALUES ('BusinessServices.Check.Threshold.DataCollection','4','Critical');
+INSERT INTO config_values (var_name,var_value,var_description) VALUES ('BusinessServices.Check.Threshold.Objects','1','Warning');
+INSERT INTO config_values (var_name,var_value,var_description) VALUES ('BusinessServices.Check.Threshold.Objects','2','Minor');
+INSERT INTO config_values (var_name,var_value,var_description) VALUES ('BusinessServices.Check.Threshold.Objects','3','Major');
+INSERT INTO config_values (var_name,var_value,var_description) VALUES ('BusinessServices.Check.Threshold.Objects','4','Critical');
+INSERT INTO config_values (var_name,var_value,var_description) VALUES ('DBWriter.HouseKeeperInterlock','0','Auto');
+INSERT INTO config_values (var_name,var_value,var_description) VALUES ('DBWriter.HouseKeeperInterlock','1','Off');
+INSERT INTO config_values (var_name,var_value,var_description) VALUES ('DBWriter.HouseKeeperInterlock','2','On');
+INSERT INTO config_values (var_name,var_value,var_description) VALUES ('LDAP.NewUserAuthMethod','0','Local password');
+INSERT INTO config_values (var_name,var_value,var_description) VALUES ('LDAP.NewUserAuthMethod','1','RADIUS password');
+INSERT INTO config_values (var_name,var_value,var_description) VALUES ('LDAP.NewUserAuthMethod','2','Certificate');
+INSERT INTO config_values (var_name,var_value,var_description) VALUES ('LDAP.NewUserAuthMethod','3','Certificate or local password');
+INSERT INTO config_values (var_name,var_value,var_description) VALUES ('LDAP.NewUserAuthMethod','4','Certificate or RADIUS password');
+INSERT INTO config_values (var_name,var_value,var_description) VALUES ('LDAP.NewUserAuthMethod','5','LDAP password');
+INSERT INTO config_values (var_name,var_value,var_description) VALUES ('LDAP.UserDeleteAction','0','Delete user');
+INSERT INTO config_values (var_name,var_value,var_description) VALUES ('LDAP.UserDeleteAction','1','Disable user');
+INSERT INTO config_values (var_name,var_value,var_description) VALUES ('NetworkDiscovery.Type','0','Disabled');
+INSERT INTO config_values (var_name,var_value,var_description) VALUES ('NetworkDiscovery.Type','1','Passive only');
+INSERT INTO config_values (var_name,var_value,var_description) VALUES ('NetworkDiscovery.Type','2','Active only');
+INSERT INTO config_values (var_name,var_value,var_description) VALUES ('NetworkDiscovery.Type','3','Passive and active');
+INSERT INTO config_values (var_name,var_value,var_description) VALUES ('Objects.Interfaces.DefaultExpectedState','0','UP');
+INSERT INTO config_values (var_name,var_value,var_description) VALUES ('Objects.Interfaces.DefaultExpectedState','1','AUTO');
+INSERT INTO config_values (var_name,var_value,var_description) VALUES ('Objects.Interfaces.DefaultExpectedState','2','IGNORE');
+INSERT INTO config_values (var_name,var_value,var_description) VALUES ('Objects.Interfaces.UseAliases','0','Don''t use aliases');
+INSERT INTO config_values (var_name,var_value,var_description) VALUES ('Objects.Interfaces.UseAliases','1','Use alias when available');
+INSERT INTO config_values (var_name,var_value,var_description) VALUES ('Objects.Interfaces.UseAliases','2','Concatenate alias with name');
+INSERT INTO config_values (var_name,var_value,var_description) VALUES ('Objects.Interfaces.UseAliases','3','Concatenate name with alias');
+INSERT INTO config_values (var_name,var_value,var_description) VALUES ('Objects.Nodes.ResolveDNSToIPOnStatusPoll','0','Never');
+INSERT INTO config_values (var_name,var_value,var_description) VALUES ('Objects.Nodes.ResolveDNSToIPOnStatusPoll','1','Always');
+INSERT INTO config_values (var_name,var_value,var_description) VALUES ('Objects.Nodes.ResolveDNSToIPOnStatusPoll','2','On failure');
+INSERT INTO config_values (var_name,var_value,var_description) VALUES ('Objects.Nodes.Resolver.AddressFamilyHint','0','None');
+INSERT INTO config_values (var_name,var_value,var_description) VALUES ('Objects.Nodes.Resolver.AddressFamilyHint','1','IPv4');
+INSERT INTO config_values (var_name,var_value,var_description) VALUES ('Objects.Nodes.Resolver.AddressFamilyHint','2','IPv6');
+INSERT INTO config_values (var_name,var_value,var_description) VALUES ('Objects.StatusCalculation.CalculationAlgorithm','1','Most critical');
+INSERT INTO config_values (var_name,var_value,var_description) VALUES ('Objects.StatusCalculation.CalculationAlgorithm','2','Single threshold');
+INSERT INTO config_values (var_name,var_value,var_description) VALUES ('Objects.StatusCalculation.CalculationAlgorithm','3','Multiple thresholds');
+INSERT INTO config_values (var_name,var_value,var_description) VALUES ('Objects.StatusCalculation.PropagationAlgorithm','1','Unchanged');
+INSERT INTO config_values (var_name,var_value,var_description) VALUES ('Objects.StatusCalculation.PropagationAlgorithm','2','Fixed');
+INSERT INTO config_values (var_name,var_value,var_description) VALUES ('Objects.StatusCalculation.PropagationAlgorithm','3','Relative');
+INSERT INTO config_values (var_name,var_value,var_description) VALUES ('Objects.StatusCalculation.PropagationAlgorithm','4','Translated');
+INSERT INTO config_values (var_name,var_value,var_description) VALUES ('Server.ImportConfigurationOnStartup','0','Never');
+INSERT INTO config_values (var_name,var_value,var_description) VALUES ('Server.ImportConfigurationOnStartup','1','Only missing elements');
+INSERT INTO config_values (var_name,var_value,var_description) VALUES ('Server.ImportConfigurationOnStartup','2','Always');
+INSERT INTO config_values (var_name,var_value,var_description) VALUES ('SNMP.Agent.V3.AuthenticationMethod','0','None');
+INSERT INTO config_values (var_name,var_value,var_description) VALUES ('SNMP.Agent.V3.AuthenticationMethod','1','MD5');
+INSERT INTO config_values (var_name,var_value,var_description) VALUES ('SNMP.Agent.V3.AuthenticationMethod','2','SHA-1');
+INSERT INTO config_values (var_name,var_value,var_description) VALUES ('SNMP.Agent.V3.AuthenticationMethod','3','SHA-224');
+INSERT INTO config_values (var_name,var_value,var_description) VALUES ('SNMP.Agent.V3.AuthenticationMethod','4','SHA-256');
+INSERT INTO config_values (var_name,var_value,var_description) VALUES ('SNMP.Agent.V3.AuthenticationMethod','5','SHA-384');
+INSERT INTO config_values (var_name,var_value,var_description) VALUES ('SNMP.Agent.V3.AuthenticationMethod','6','SHA-512');
+INSERT INTO config_values (var_name,var_value,var_description) VALUES ('SNMP.Agent.V3.EncryptionMethod','0','None');
+INSERT INTO config_values (var_name,var_value,var_description) VALUES ('SNMP.Agent.V3.EncryptionMethod','1','DES');
+INSERT INTO config_values (var_name,var_value,var_description) VALUES ('SNMP.Agent.V3.EncryptionMethod','2','AES-128');
+INSERT INTO config_values (var_name,var_value,var_description) VALUES ('SNMP.Agent.V3.EncryptionMethod','3','AES-192');
+INSERT INTO config_values (var_name,var_value,var_description) VALUES ('SNMP.Agent.V3.EncryptionMethod','4','AES-256');
+INSERT INTO config_values (var_name,var_value,var_description) VALUES ('Syslog.NodeMatchingPolicy','0','IP, then hostname');
+INSERT INTO config_values (var_name,var_value,var_description) VALUES ('Syslog.NodeMatchingPolicy','1','Hostname, then IP');
+
+
+/**
+ * System user
+ */
+INSERT INTO users (id,name,password,system_access,flags,full_name,
+                   description,grace_logins,auth_method,guid,
+                   cert_mapping_method,cert_mapping_data,
+                   auth_failures,last_passwd_change,min_passwd_length,
+                   disabled_until,last_login,created)
+   VALUES (0,'system',
+           '3A445C0072CD69D9030CC6644020E5C4576051B1', /* Default password: netxms */
+           35184372088831,12,'','Built-in system account',5,0,  /* Flags: change password + disabled */
+           '00000000-0000-0000-0000-000000000000',0,'',0,0,0,0,0,0
+          );
+
+/**
+ * Default admin user
+ */
+INSERT INTO users (id,name,password,system_access,flags,full_name,
+                   description,grace_logins,auth_method,guid,
+                   cert_mapping_method,cert_mapping_data,
+                   auth_failures,last_passwd_change,min_passwd_length,
+                   disabled_until,last_login,created)
+   VALUES (1,'admin',
+           '3A445C0072CD69D9030CC6644020E5C4576051B1', /* Default password: netxms */
+           0,8,'','Default administrator account',5,0,
+           '00000000-0000-0000-0000-000000000000',0,'',0,0,0,0,0,0
+          );
+
+/**
+ * Anonymous user
+ */
+INSERT INTO users (id,name,password,system_access,flags,full_name,
+                   description,grace_logins,auth_method,guid,
+                   cert_mapping_method,cert_mapping_data,
+                   auth_failures,last_passwd_change,min_passwd_length,
+                   disabled_until,last_login,created)
+   VALUES (2,'anonymous',
+           '$$', /* No password */
+           0,1104,'','Anonymous account',5,0,  /* Flags: UF_CANNOT_CHANGE_PASSWORD | UF_PASSWORD_NEVER_EXPIRES | UF_TOKEN_AUTH_ONLY */
+           '00000000-0000-0000-0000-000000000000',0,'',0,0,0,0,0,0
+          );
+
+/**
+ * Special "Everyone" user group
+ */
+INSERT INTO user_groups (id,name,system_access,ui_access_rules,flags,description,guid,created)
+   VALUES (1073741824, 'Everyone', 274877906960, '*', 0, 'Built-in everyone group',
+           '00000000-0000-0000-0000-000000000000',0
+          );
+
+/**
+ * Default "Admins" group
+ */
+INSERT INTO user_groups (id,name,system_access,ui_access_rules,flags,description,guid,created)
+   VALUES (1073741825, 'Admins', 9223372036854775807, '*', 0, 'Default administrative group',
+           '00000000-0000-0000-0000-000000000000',0
+          );
+
+INSERT INTO user_group_members (group_id,user_id) VALUES (1073741825,1);
+
+INSERT INTO acl (object_id,user_id,access_rights) VALUES (1,1073741825,2097151);
+INSERT INTO acl (object_id,user_id,access_rights) VALUES (2,1073741825,2097151);
+INSERT INTO acl (object_id,user_id,access_rights) VALUES (3,1073741825,2097151);
+INSERT INTO acl (object_id,user_id,access_rights) VALUES (5,1073741825,2097151);
+INSERT INTO acl (object_id,user_id,access_rights) VALUES (6,1073741825,2097151);
+INSERT INTO acl (object_id,user_id,access_rights) VALUES (7,1073741825,2097151);
+INSERT INTO acl (object_id,user_id,access_rights) VALUES (9,1073741825,2097151);
+
+/*
+** Default community string
+*/
+INSERT INTO snmp_communities (id,community,zone) VALUES(1,'public',-1);
+
+/*
+**Notification channels
+*/
+INSERT INTO notification_channels (name,driver_name,description,configuration) VALUES 
+   (
+      'SMTP-Text','SMTP','Default SMTP text channel',
+      '#Server=localhost' CONCAT CRLF CONCAT
+      '#Port=25 # if TLSMode=TLS, default value is 465 else 25' CONCAT CRLF CONCAT
+      '#TLSMode=NONE # NONE, TLS, STARTTLS' CONCAT CRLF CONCAT
+      '#AuthMethod=none # none,basic, digest, ntlm, negotiate' CONCAT CRLF CONCAT
+      '#Login=' CONCAT CRLF CONCAT
+      '#Password=' CONCAT CRLF CONCAT
+      '#FromAddr=netxms@localhost' CONCAT CRLF CONCAT
+      '#FromName=NetXMS Server' CONCAT CRLF CONCAT
+      '#IsHTML=no' CONCAT CRLF
+   );
+INSERT INTO notification_channels (name,driver_name,description,configuration) VALUES 
+   (
+      'SMTP-HTML','SMTP','Default SMTP HTML channel',
+      '#Server=localhost' CONCAT CRLF CONCAT
+      '#Port=25 # if TLSMode=TLS, default value is 465 else 25' CONCAT CRLF CONCAT
+      '#TLSMode=NONE # NONE, TLS, STARTTLS' CONCAT CRLF CONCAT
+      '#AuthMethod=none # none,basic, digest, ntlm, negotiate' CONCAT CRLF CONCAT
+      '#Login=' CONCAT CRLF CONCAT
+      '#Password=' CONCAT CRLF CONCAT
+      '#FromAddr=netxms@localhost' CONCAT CRLF CONCAT
+      '#FromName=NetXMS Server' CONCAT CRLF CONCAT
+      '#IsHTML=yes' CONCAT CRLF
+   );
+

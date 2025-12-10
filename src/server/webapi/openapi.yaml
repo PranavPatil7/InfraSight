@@ -1,0 +1,1558 @@
+openapi: 3.0.2
+info:
+  title: NetXMS API
+  version: 1.0.0
+paths:
+  /:
+    get:
+      summary: Root endpoint
+      description: Root API endpoint providing basic API information.
+      responses:
+        '200':
+          description: API root information
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  description:
+                    type: string
+                    description: API description
+                  version:
+                    type: string
+                    description: NetXMS version
+                  build:
+                    type: string
+                    description: Build tag
+                  apiVersion:
+                    type: integer
+                    description: API version number
+      security: []
+  /v1/server-info:
+    get:
+      summary: Get server information
+      description: Retrieve detailed server information including version, build, and configuration details.
+      responses:
+        '200':
+          description: Server information retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  version:
+                    type: string
+                    description: Server version
+                  build:
+                    type: string
+                    description: Build tag
+                  id:
+                    type: integer
+                    description: Server ID
+                  name:
+                    type: string
+                    description: Server name
+                  color:
+                    type: string
+                    description: Server color (for UI theming)
+                  messageOfTheDay:
+                    type: string
+                    description: Message of the day
+                  tz:
+                    type: string
+                    description: Server timezone
+                  options:
+                    type: object
+                    properties:
+                      zoningEnabled:
+                        type: boolean
+                      strictAlarmStatusFlow:
+                        type: boolean
+                      timedAlarmAckEnabled:
+                        type: boolean
+                      helpdeskLinkActive:
+                        type: boolean
+                      tileServerURL:
+                        type: string
+                  dateTimeFormat:
+                    type: object
+                    properties:
+                      date:
+                        type: string
+                        description: Date format string
+                      timeLong:
+                        type: string
+                        description: Long time format string
+                      timeShort:
+                        type: string
+                        description: Short time format string
+                  components:
+                    type: array
+                    items:
+                      type: object
+                    description: Registered server components
+        '401':
+          description: Unauthorized
+      security:
+        - BearerAuth: []
+  /v1/status:
+    get:
+      summary: Get session status
+      description: Retrieve current session status including user information.
+      responses:
+        '200':
+          description: Session status retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  userId:
+                    type: integer
+                    description: Current user ID
+                  userName:
+                    type: string
+                    description: Current user login name
+                  systemAccessRights:
+                    type: integer
+                    description: User's system access rights bitmask
+        '401':
+          description: Unauthorized
+      security:
+        - BearerAuth: []
+  /v1/alarms:
+    get:
+      summary: List Alarms
+      description: Retrieve a list of alarms.
+      parameters:
+        - name: rootObject
+          in: query
+          schema:
+            type: integer
+            description: ID of root object for alarm retrieval (0 to retrieve all alarms)
+        - name: includeObjectDetails
+          in: query
+          schema:
+            type: boolean
+            description: If true, include full source object details in response
+      responses:
+        '200':
+          description: Successful retrieval of alarms.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    severity:
+                      type: integer
+                    state:
+                      type: integer
+                    source:
+                      type: integer
+                    message:
+                      type: string
+                    lastChangeTime:
+                      type: string
+                      format: date-time
+      security:
+        - BearerAuth: []
+  /v1/alarms/{alarm-id}:
+    get:
+      summary: Get details of specific alarm
+      parameters:
+        - name: alarm-id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Details of given alarm
+        '401':
+          description: Unauthorized
+        '403':
+          description: User does not have read access to alarm or alarm's source object
+        '404':
+          description: Alarm with given ID does not exist
+      security:
+        - BearerAuth: []
+  /v1/alarms/{alarm-id}/acknowledge:
+    post:
+      summary: Acknowledge Alarm
+      description: Acknowledge an alarm.
+      parameters:
+        - name: alarm-id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Successful acknowledgement of alarm.
+        '401':
+          description: Unauthorized
+        '403':
+          description: User does not have read access to alarm or alarm's source object
+        '404':
+          description: Alarm with given ID does not exist
+      security:
+        - BearerAuth: []
+  /v1/alarms/{alarm-id}/resolve:
+    post:
+      summary: Resolve Alarm
+      description: Resolve an alarm.
+      parameters:
+        - name: alarm-id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Successful resolve of alarm.
+        '401':
+          description: Unauthorized
+        '403':
+          description: User does not have read access to alarm or alarm's source object
+        '404':
+          description: Alarm with given ID does not exist
+      security:
+        - BearerAuth: []
+  /v1/alarms/{alarm-id}/terminate:
+    post:
+      summary: Terminate Alarm
+      description: Terminate an alarm.
+      parameters:
+        - name: alarm-id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Successful termination of alarm.
+        '401':
+          description: Unauthorized
+        '403':
+          description: User does not have read access to alarm or alarm's source object
+        '404':
+          description: Alarm with given ID does not exist
+      security:
+        - BearerAuth: []
+  /v1/find/mac-address:
+    get:
+      summary: Find MAC address
+      parameters:
+        - name: macAddress
+          in: query
+          required: true
+          schema:
+            type: string
+            description: Mac address or it's first part for search. 
+        - name: searchLimit
+          in: query
+          required: false
+          schema:
+            type: integer
+            description: Optional. Number of results to be returned, defualt is 100.
+        - name: includeObjects
+          in: query
+          required: false
+          schema:
+            type: boolean
+            description: Optional. If provided, object information is included in respone.
+      responses:
+        '200':
+          description: Successful search of MAC address.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    localMacAddress:
+                      type: string
+                      description: Local mac address
+                    localNodeId:
+                      type: integer
+                      description: Locla node id
+                    localInterfaceId:
+                      type: integer
+                      description: Local interface ID
+                    localIpAddress:
+                      type: object
+                      properties:
+                        family:
+                          type: integer
+                          description: IP address family
+                        address:
+                          type: integer
+                          description: IP address
+                        prefixLength:
+                          type: integer
+                          description: IP address prefix lenght
+                    type:
+                      type: string
+                      description: Connection type
+                    nodeId:
+                      type: integer
+                      description: Node or access point ID
+                    interfaceId:
+                      type: integer
+                      description: Interface ID
+                    interfaceIndex:
+                      type: integer
+                      description: Interface index
+        '401':
+          description: Unauthorized.
+      security:
+        - BearerAuth: []
+  /v1/grafana/infinity/alarms:
+    post:
+      summary: Retrieve alarms in format sutable Grafana Infinity
+      description: Retrieve alarms in format sutable Grafana Infinity.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                rootObjectId:
+                  type: integer
+                  description: Optional. ID of root object for alarm retrieval (0 to retrieve all alarms)
+      responses:
+        '200':
+          description: Successful retrieval of alarms.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GrafanaAlarm'
+        '401':
+          description: Unauthorized.
+      security:
+        - BearerAuth: []
+  /v1/grafana/infinity/object-query:
+    post:
+      summary: Execute object query and return result in format suitable for Grafana Infinity
+      description: Execute object query and return result in format suitable for Grafana Infinity.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                rootObjectId:
+                  type: integer
+                  description: ID of root object for query execution
+                queryId:
+                  type: integer
+                  description: ID of object query to be executed
+                limit:
+                  type: integer
+                  description: Optional limit on number of retrieved objects. Limit is applied after ordering.
+                inputFields:
+                  type: object
+                  description: User input fields (will be available in query script via global variable $INPUT).
+                  additionalProperties:
+                    type: string
+      responses:
+        '200':
+          description: Successful retrieval of query results.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  description: One row of result set with single object query result, fields depend on query definition
+        '400':
+          description: Query error
+        '401':
+          description: Unauthorized.
+      security:
+        - BearerAuth: []
+  /v1/grafana/infinity/summary-table:
+    post:
+      summary: Retrieve summary table in format sutable Grafana Infinity
+      description: Retrieve summary table in format sutable Grafana Infinity.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                rootObjectId:
+                  type: integer
+                  description: ID of root object for summary table retrieval
+                tableId:
+                  type: integer
+                  description: ID of summary table to be retrieved
+      responses:
+        '200':
+          description: Successful retrieval of summary table.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  description: One row of summary table, fileds depend on table definition (First column is always object name)
+        '401':
+          description: Unauthorized.
+      security:
+        - BearerAuth: []
+  /v1/grafana/objects/{object-id}/dci-list:
+    get:
+      summary: Get DCI list for Grafana
+      description: Retrieve data collection items (DCIs) for a specific object formatted for Grafana.
+      parameters:
+        - name: object-id
+          in: path
+          required: true
+          schema:
+            type: integer
+            description: Object ID
+      responses:
+        '200':
+          description: DCI list retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  objects:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          description: DCI ID
+                        name:
+                          type: string
+                          description: DCI description
+        '400':
+          description: Object is not data collection target
+        '401':
+          description: Unauthorized
+        '403':
+          description: User does not have read access to given object
+        '404':
+          description: Object with given ID does not exist
+      security:
+        - BearerAuth: []
+  /v1/grafana/objects-status:
+    post:
+      summary: Get objects status for Grafana
+      description: Retrieve status information for child objects of a root object formatted for Grafana.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                rootObjectId:
+                  type: integer
+                  description: Root object ID to retrieve children status for
+              required:
+                - rootObjectId
+      responses:
+        '200':
+          description: Objects status retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    Name:
+                      type: string
+                      description: Object name (may include alias in parentheses)
+                    Status:
+                      type: integer
+                      description: Object status
+        '400':
+          description: Invalid root object ID
+        '401':
+          description: Unauthorized
+        '403':
+          description: User does not have read access to root object
+        '404':
+          description: Root object with given ID does not exist
+      security:
+        - BearerAuth: []
+  /v1/grafana/object-list:
+    get:
+      summary: Get object list for Grafana
+      description: Retrieve a list of objects formatted for Grafana with optional filtering.
+      parameters:
+        - name: filter
+          in: query
+          schema:
+            type: string
+            description: Filter type for objects (e.g., DataCollectionTarget, Summary, Alarm)
+      responses:
+        '200':
+          description: Object list retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  objects:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          description: Object ID
+                        name:
+                          type: string
+                          description: Object name (may include alias)
+        '401':
+          description: Unauthorized
+      security:
+        - BearerAuth: []
+  /v1/grafana/summary-table-list:
+    get:
+      summary: Get summary table list for Grafana
+      description: Retrieve a list of available DCI summary tables formatted for Grafana.
+      responses:
+        '200':
+          description: Summary table list retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  objects:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          description: Summary table ID
+                        name:
+                          type: string
+                          description: Summary table name
+        '401':
+          description: Unauthorized
+        '403':
+          description: User does not have required system access rights
+      security:
+        - BearerAuth: []
+  /v1/grafana/query-list:
+    get:
+      summary: Get object query list for Grafana
+      description: Retrieve a list of available object queries formatted for Grafana.
+      responses:
+        '200':
+          description: Object query list retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  objects:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          description: Query ID
+                        name:
+                          type: string
+                          description: Query name
+        '401':
+          description: Unauthorized
+        '403':
+          description: User does not have required system access rights
+      security:
+        - BearerAuth: []
+  /v1/login:
+    post:
+      summary: User Login
+      description: Authenticate a user and respond with a token.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+                method:
+                  type: string
+                  description: Choosen 2FA method.
+                requestId:
+                  type: string
+                  description: Request ID provided by server in response to 2FA method selection.
+                challenge:
+                  type: string
+                  description: 2FA challenge provided by server
+                response:
+                  type: string
+                  description: 2FA response provided by client
+              required:
+                - username
+                - password
+      responses:
+        '201':
+          description: Successful login.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    description: Authentication token.
+                  userId:
+                    type: integer
+                  systemAccessRights:
+                    type: integer
+                  changePassword:
+                    type: boolean
+                    description: Indicates if password change is required for this user.
+                  graceLogins:
+                    type: integer
+                    description: Number of grace logins left if password change is required.
+        '400':
+          description: Bad Request - Invalid request body
+        '401':
+          description: Unauthorized.
+          headers:
+            WWW-Authenticate:
+              description: Challenge "2FA" indicates that request should be repeated with one of provided 2FA methods. If method was provided, response will contain request ID and challenge.
+              schema:
+                type: string
+                example: 2FA TOTP,Telegram
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errorCode:
+                    type: integer
+                    description: Error code that can provide additional information on login failure reasons.
+      security: []
+  /v1/logout:
+    post:
+      summary: User Logout
+      description: Logout a user and invalidate their token.
+      responses:
+        '204':
+          description: Successful logout.
+      security:
+        - BearerAuth: []
+  /v1/objects:
+    get:
+      summary: List objects
+      description: Retrieve a list of objects (with optional filter).
+      parameters:
+        - name: filter
+          in: query
+          schema:
+            type: string
+            description: Optional filter string. If provided, only objects with name or alias containing given string will be returned.
+        - name: parent
+          in: query
+          schema:
+            type: integer
+            description: Optional parent object ID. If provided, only child objects of given parent object will be returned, otherwise all top-level objects will be returned.
+      responses:
+        '200':
+          description: Successful retrieval of objects.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ObjectSummary'
+        '401':
+          description: Unauthorized.
+      security:
+        - BearerAuth: []
+  /v1/objects/{object-id}:
+    get:
+      summary: Get object details
+      description: Retrieve specific object details. Contains data for object overview, alarms, and last values.
+      parameters:
+        - name: object-id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful retrieval of object details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObjectDetails'
+        '401':
+          description: Unauthorized
+        '403':
+          description: User does not have read access to given object
+        '404':
+          description: Object with given ID does not exist
+      security:
+        - BearerAuth: []
+  /v1/objects/{object-id}/execute-agent-command:
+    post:
+      summary: Execute command on agent
+      parameters:
+        - name: object-id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '201':
+          description: Command executed successfully
+        '401':
+          description: Unauthorized
+        '403':
+          description: User does not have control access to given object
+        '404':
+          description: Object with given ID does not exist
+        '500':
+          description: Command execution failed
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    reason:
+                      type: string
+                      description: Failure reason
+                    agentErrorCode:
+                      type: integer
+                      description: Error code returned by agent (if applicable)
+                    agentErrorText:
+                      type: string
+                      description: Textual description of agent error code (if applicable)
+      security:
+        - BearerAuth: []
+  /v1/objects/{object-id}/execute-script:
+    post:
+      summary: Execute script within context of given object
+      parameters:
+        - name: object-id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                parameters:
+                  type: array
+                  description: Optional list of parameters to be passed to the script
+                  items:
+                    type: string
+                    description: Single parameter entry
+                resultAsMap:
+                  type: boolean
+                  description: If true, result will always be presented as a map (JSON object)
+                script:
+                  type: string
+                  description: Source code of the script
+      responses:
+        '200':
+          description: Script executed successfully
+        '400':
+          description: Invalid arguments
+        '401':
+          description: Unauthorized
+        '403':
+          description: User does not have control access to given object
+        '404':
+          description: Object with given ID does not exist
+        '500':
+          description: Script execution failed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  diagnostic:
+                    type: object
+                    description: Additional diaagnostic information, if available
+                  reason:
+                    type: string
+                    description: Failure reason
+      security:
+        - BearerAuth: []
+  /v1/objects/{object-id}/data-collection/current-values:
+    get:
+      summary: Get current DCI values
+      description: Retrieve current values for all data collection items (DCIs) of a given object.
+      parameters:
+        - name: object-id
+          in: path
+          required: true
+          schema:
+            type: integer
+            description: Object ID
+      responses:
+        '200':
+          description: Current DCI values retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  objectId:
+                    type: integer
+                    description: Object ID
+                  objectName:
+                    type: string
+                    description: Object name
+                  values:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/DCIValue'
+        '400':
+          description: Object is not data collection target
+        '401':
+          description: Unauthorized
+        '403':
+          description: User does not have read access to given object
+        '404':
+          description: Object with given ID does not exist
+      security:
+        - BearerAuth: []
+  /v1/objects/{object-id}/data-collection/{dci-id}/history:
+    get:
+      summary: Get data collection history
+      description: Retrieve historical data for a specific DCI (Data Collection Item).
+      parameters:
+        - name: object-id
+          in: path
+          required: true
+          schema:
+            type: integer
+            description: Object ID
+        - name: dci-id
+          in: path
+          required: true
+          schema:
+            type: integer
+            description: DCI (Data Collection Item) ID
+        - name: timeFrom
+          in: query
+          schema:
+            type: integer
+            description: Start time for data retrieval (Unix timestamp)
+        - name: timeTo
+          in: query
+          schema:
+            type: integer
+            description: End time for data retrieval (Unix timestamp)
+        - name: maxRows
+          in: query
+          schema:
+            type: integer
+            description: Maximum number of data points to return
+        - name: historicalDataType
+          in: query
+          schema:
+            type: integer
+            description: Type of historical data (0=raw, 1=processed, 2=full table, 3=raw and processed)
+      responses:
+        '200':
+          description: Data collection history retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  description:
+                    type: string
+                    description: DCI description
+                  unitName:
+                    type: string
+                    description: Unit name for the value
+                  values:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        timestamp:
+                          type: string
+                          format: date-time
+                        value:
+                          type: string
+                          description: Data value
+        '400':
+          description: Object is not data collection target or DCI type not supported
+        '401':
+          description: Unauthorized
+        '403':
+          description: User does not have read access to given object
+        '404':
+          description: Object or DCI with given ID does not exist
+        '500':
+          description: Database failure
+      security:
+        - BearerAuth: []
+  /v1/objects/{object-id}/expand-text:
+    post:
+      summary: Expand text macros
+      description: Expand text containing NetXMS macros in the context of a given object.
+      parameters:
+        - name: object-id
+          in: path
+          required: true
+          schema:
+            type: integer
+            description: Object ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - text
+              properties:
+                text:
+                  type: string
+                  description: Text containing macros to expand
+                alarmId:
+                  type: integer
+                  description: Optional alarm ID for alarm-related macro expansion
+                inputFields:
+                  type: object
+                  description: Optional key-value pairs for custom macro substitution
+                  additionalProperties:
+                    type: string
+      responses:
+        '200':
+          description: Text expanded successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  expandedText:
+                    type: string
+                    description: Text with all macros expanded
+        '400':
+          description: Invalid request or missing text parameter
+        '401':
+          description: Unauthorized
+        '403':
+          description: User does not have read access to given object or alarm
+        '404':
+          description: Object with given ID does not exist
+      security:
+        - BearerAuth: []
+
+  /v1/objects/{object-id}/set-maintenance:
+    post:
+      summary: Make object enter or leave maintenance mode
+      parameters:
+        - name: object-id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                maintenance:
+                  type: boolean
+                  description: true - if object should enter maintenance mode, false - if leave
+                comments:
+                  type: string
+                  description: Optional meintenance comments
+      responses:
+        '200':
+          description: Maintenance mode changed successfully
+        '400':
+          description: Invalid arguments
+        '401':
+          description: Unauthorized
+        '403':
+          description: User does not have control access to given object
+        '404':
+          description: Object with given ID does not exist
+      security:
+        - BearerAuth: []
+  /v1/objects/{object-id}/set-managed:
+    post:
+      summary: Manage or unmanage object
+      parameters:
+        - name: object-id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                managed:
+                  type: boolean
+                  description: true - for manage object, false - for object unmanage
+      responses:
+        '200':
+          description: Object successfully managed/unmanaged
+        '400':
+          description: Invalid arguments
+        '401':
+          description: Unauthorized
+        '403':
+          description: User does not have control access to given object
+        '404':
+          description: Object with given ID does not exist
+      security:
+        - BearerAuth: []
+  /v1/objects/{object-id}/take-screenshot:
+    get:
+      summary: Take screenshot from remote system via NetXMS agent
+      parameters:
+        - name: object-id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: sessionName
+          description: Session name to take screenshot from. If not provided screenshot will be taken from console session.
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Screenshot successfully taken.
+          content:
+            image/png:
+              schema:
+                type: string
+        '401':
+          description: Unauthorized
+        '403':
+          description: User does not have read access to given object
+        '404':
+          description: Object with given ID does not exist
+        '500':
+          description: Server side error (common reason is failed communication to agent). Response document may contain detailed failure reason.
+      security:
+        - BearerAuth: []
+  /v1/objects/{object-id}/sub-tree:
+    get:
+      summary: Get object sub-tree
+      description: Retrieve a sub-tree of objects starting from the specified parent object.
+      parameters:
+        - name: object-id
+          in: path
+          required: true
+          schema:
+            type: integer
+            description: Parent object ID
+        - name: filter
+          in: query
+          schema:
+            type: string
+            description: Optional filter string. If provided, only objects with name or alias containing given string will be returned.
+      responses:
+        '200':
+          description: Object sub-tree retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ObjectSummary'
+        '401':
+          description: Unauthorized
+        '403':
+          description: User does not have read access to given object
+        '404':
+          description: Object with given ID does not exist
+      security:
+        - BearerAuth: []
+  /v1/objects/query:
+    post:
+      summary: Execute object query
+      description: Execute object query (specialized NXSL script) and return all matching objects along with additional data fields.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                fields:
+                  type: array
+                  description: List of additional fields to be retrieved.
+                  items:
+                    type: string
+                inputFields:
+                  type: array
+                  description: List of user input fields (will be available in query script via global variable $INPUT).
+                  items:
+                    type: object
+                    additionalProperties:
+                      type: string
+                      description: Set of key-value pairs where key is input field name and value is actual value provided by user.
+                limit:
+                  type: integer
+                  description: Optional limit on number of retrieved objects. Limit is applied after ordering.
+                orderBy:
+                  type: array
+                  description: List of object attributes to be used for ordering result.
+                  items:
+                    type: string
+                query:
+                  type: string
+                  description: Object query script
+                  example: type == NODE
+      responses:
+        '200':
+          description: Query successfully executed.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ObjectQueryResult'
+        '401':
+          description: Unauthorized.
+      security:
+        - BearerAuth: []
+  /v1/objects/search:
+    post:
+      summary: Search objects
+      description: Search for objects matching certain criteria. Multiple criterias will be combined with logical AND.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                class:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ObjectClass'
+                ipAddress:
+                  type: string
+                  format: ip-address
+                  description: IP address filter string. If provided, only objects with matching primary IP address will be returned.
+                name:
+                  type: string
+                  description: Name filter string. If provided, only objects with name or alias containing given string will be returned.
+                parent:
+                  type: integer
+                  description: Parent object ID. If provided, only child objects (both direct and indirect) of given parent object will be returned.
+                zoneUIN:
+                  type: integer
+                  description: Zone UIN. If provided, only objects within given zone will be returned.
+      responses:
+        '200':
+          description: Successful retrieval of objects.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ObjectSummary'
+        '401':
+          description: Unauthorized.
+      security:
+        - BearerAuth: []
+  /v1/object-tools:
+    get:
+      summary: List available object tools
+      description: Retrieve a list of object tools.
+      responses:
+        '200':
+          description: Successful retrieval of object tools.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    name:
+                      type: string
+                    kind:
+                      type: string
+                    filter:
+                      type: string
+      security:
+        - BearerAuth: []
+  /v1/dci-summary-tables:
+    get:
+      summary: List DCI summary tables
+      description: Retrieve a list of available DCI summary tables.
+      responses:
+        '200':
+          description: DCI summary tables retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      description: Summary table ID
+                    name:
+                      type: string
+                      description: Summary table name
+                    description:
+                      type: string
+                      description: Summary table description
+        '401':
+          description: Unauthorized
+      security:
+        - BearerAuth: []
+  /v1/dci-summary-tables/{table-id}/query:
+    post:
+      summary: Query specific DCI summary table
+      description: Execute a query on a specific DCI summary table.
+      parameters:
+        - name: table-id
+          in: path
+          required: true
+          schema:
+            type: integer
+            description: Summary table ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                rootObjectId:
+                  type: integer
+                  description: Root object ID for table query
+                filters:
+                  type: object
+                  description: Optional filters to apply to the query
+      responses:
+        '200':
+          description: Summary table query executed successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  description: Summary table row data
+        '401':
+          description: Unauthorized
+        '404':
+          description: Summary table with given ID does not exist
+      security:
+        - BearerAuth: []
+  /v1/dci-summary-tables/adhoc-query:
+    post:
+      summary: Execute ad-hoc DCI summary table query
+      description: Execute an ad-hoc query on DCI summary tables.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                query:
+                  type: string
+                  description: Ad-hoc query string
+                rootObjectId:
+                  type: integer
+                  description: Root object ID for table query
+                parameters:
+                  type: object
+                  description: Query parameters
+      responses:
+        '200':
+          description: Ad-hoc query executed successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  description: Query result row data
+        '400':
+          description: Invalid query
+        '401':
+          description: Unauthorized
+      security:
+        - BearerAuth: []
+components:
+  schemas:
+    Alarm:
+      type: object
+      properties:
+        id:
+          type: integer
+        message:
+          type: string
+        severity:
+          type: string
+    ObjectClass:
+      type: string
+      enum:
+        - AccessPoint
+        - AgentPolicyLogParser
+        - Asset
+        - AssetGroup
+        - AssetRoot
+        - BusinessService
+        - BusinessServiceProto
+        - BusinessServiceRoot
+        - Chassis
+        - Cluster
+        - Condition
+        - Container
+        - Dashboard
+        - DashboardGroup
+        - DashboardRoot
+        - Generic
+        - Interface
+        - MobileDevice
+        - Network
+        - NetworkMap
+        - NetworkMapGroup
+        - NetworkMapRoot
+        - NetworkService
+        - Node
+        - NodeLink
+        - Rack
+        - Report
+        - ReportGroup
+        - ReportRoot
+        - Sensor
+        - ServiceCheck
+        - ServiceRoot
+        - Subnet
+        - Template
+        - TemplateGroup
+        - TemplateRoot
+        - VPNConnector
+        - Zone
+    GrafanaAlarm:
+      type: object
+      properties:
+        Id:
+          type: integer
+          description: Alarm ID
+        Severity:
+          type: string
+          description: Alarm severity name (Normal, Warning, Minor, Major, Critical, etc.)
+        State:
+          type: string
+          description: Alarm state name (Outstanding, Acknowledged, Resolved, Terminated)
+        Source:
+          type: string
+          description: Source object name (may include alias in parentheses)
+        Message:
+          type: string
+          description: Alarm message
+        Count:
+          type: integer
+          description: Alarm repeat count
+        Ack/Resolve by:
+          type: string
+          description: User who acknowledged/resolved the alarm
+        Created:
+          type: string
+          format: date-time
+          description: Alarm creation time
+        Last Change:
+          type: string
+          format: date-time
+          description: Last change time of the alarm
+    ObjectDetails:
+      type: object
+      properties:
+        alias:
+          type: string
+          description: Object alias
+        category:
+          type: integer
+          description: Object category ID
+        class:
+          $ref: '#/components/schemas/ObjectClass'
+        guid:
+          type: string
+          format: uuid
+          description: Object GUID
+        id:
+          type: integer
+          description: Object ID
+        name:
+          type: string
+          description: Object name
+        timestamp:
+          type: string
+          format: date-time
+          description: Object last change timestamp
+        status:
+          $ref: '#/components/schemas/Status'
+    ObjectQueryResult:
+      type: object
+      properties:
+        fields:
+          type: object
+          additionalProperties:
+            type: string
+            description: Set of key-value pairs where key is object attribute name and value is actual value read from object.
+        object:
+          $ref: '#/components/schemas/ObjectSummary'
+    ObjectSummary:
+      type: object
+      properties:
+        alias:
+          type: string
+          description: Object alias
+        category:
+          type: integer
+          description: Object category ID
+        class:
+          $ref: '#/components/schemas/ObjectClass'
+        guid:
+          type: string
+          format: uuid
+          description: Object GUID
+        id:
+          type: integer
+          description: Object ID
+        name:
+          type: string
+          description: Object name
+        timestamp:
+          type: string
+          format: date-time
+          description: Object last change timestamp
+        status:
+          $ref: '#/components/schemas/Status'
+    Status:
+      type: integer
+      enum:
+        - 0
+        - 1
+        - 2
+        - 3
+        - 4
+        - 5
+        - 6
+        - 7
+        - 8
+    DCIValue:
+      type: object
+      description: Data Collection Item (DCI) current value
+      properties:
+        ownerId:
+          type: integer
+          description: Object ID that owns this DCI
+        id:
+          type: integer
+          description: DCI ID
+        name:
+          type: string
+          description: DCI name
+        flags:
+          type: integer
+          description: DCI flags
+        description:
+          type: string
+          description: DCI description
+        sourceType:
+          type: integer
+          description: Data source type
+        dataType:
+          type: integer
+          description: Data type
+        value:
+          type: string
+          description: Current value as string
+        timestamp:
+          type: integer
+          description: Timestamp of last value collection (Unix timestamp)
+        status:
+          type: integer
+          description: Current DCI status
+        type:
+          type: integer
+          description: DCI type
+        errorCount:
+          type: integer
+          description: Number of consecutive collection errors
+        templateItemId:
+          type: integer
+          description: Template item ID if DCI is created from template
+        unitName:
+          type: string
+          description: Unit name for the value
+        multiplier:
+          type: integer
+          description: Value multiplier
+        noValue:
+          type: boolean
+          description: True if DCI has no collected value
+        comments:
+          type: string
+          description: DCI comments
+        anomalyDetected:
+          type: boolean
+          description: True if anomaly was detected in recent values
+        userTag:
+          type: string
+          description: User-defined tag
+        hasActiveThreshold:
+          type: boolean
+          description: True if DCI has active threshold
+        threshold:
+          type: object
+          description: Active threshold information (present only if hasActiveThreshold is true)
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer

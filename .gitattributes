@@ -1,0 +1,9 @@
+* text=auto
+*.java diff=java
+
+*.c diff=cpp
+*.cpp diff=cpp
+*.h diff=cpp
+
+*.sln text eol=crlf
+*.vcproj text eol=crlf

@@ -1,0 +1,34 @@
+name: Build and run basic unit tests
+
+on:
+  push:
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  Build-and-Run-Tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Update apt cache
+        run: sudo apt-get update
+      - name: Install dependencies
+        run: sudo apt-get install -y libpq-dev libcurl4-openssl-dev libssh-dev libmosquitto-dev libjq-dev libpcre3-dev libmicrohttpd-dev
+      - name: Prepare release build
+        run: ./build/prepare_release_build.sh
+      - name: autoconf
+        run: ./reconf
+      - name: configure
+        run: ./configure --prefix=/tmp/build --with-server --with-agent --with-pgsql --with-tests
+      - name: make
+        run: make -j$(nproc)
+      - name: make install
+        run: make install
+      - name: Run tests
+        run: |
+          /tmp/build/bin/netxmsd -v || true
+          /tmp/build/bin/nxagentd -v || true
+          /tmp/build/bin/netxms-test-suite

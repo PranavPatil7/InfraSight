@@ -1,19 +1,8 @@
 
-# NetXMS — Enterprise-Grade Monitoring
+# Infra Sight - Hybrid Infrastructure Monitoring Platform                                                              
 
-[![Build Status](https://github.com/netxms/netxms/actions/workflows/build_and_test.yaml/badge.svg)](https://github.com/netxms/netxms/actions)
-[![License: GPL v2](https://img.shields.io/badge/License-GPL%20v2-blue.svg)](https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html)
-[![Design Contributions Welcome](https://contribute.design/api/shield/netxms/netxms)](https://contribute.design/)
+Infra Sight is an open-source network and infrastructure monitoring and management solution that provides comprehensive performance and availability monitoring with flexible event processing, alerting, reporting, and graphing for all layers of IT infrastructure. It's a unified solution that can monitor and manage your entire IT infrastructure — from network switches to applications — all in one place.
 
-NetXMS is an open-source network and infrastructure monitoring and management solution that provides comprehensive performance and availability monitoring with flexible event processing, alerting, reporting, and graphing for all layers of IT infrastructure. It's a unified solution that can monitor and manage your entire IT infrastructure — from network switches to applications — all in one place.
-
-## 🚀 Quick Start
-
-- **[Docker Setup](https://github.com/netxms/docker)** - Fastest way to get started 
-- **[Download](https://www.netxms.org/download/)** - Get the latest release
-- **[Documentation](https://www.netxms.org/documentation/adminguide/)** - Complete administration guide
-- **[Ubuntu installation video](https://www.youtube.com/watch?v=jOVKc6y1dpE)** - Video tutorials and webinars
-- **[Demo](https://www.youtube.com/watch?v=QhHznyOXEFk)** - NetXMS demo
 
 ## 🏗️ Architecture
 
@@ -144,9 +133,6 @@ We provide a public APT repository at http://packages.netxms.org/ for all Debian
    sudo systemctl enable netxmsd
    ```
 
-### Other Platforms
-
-Installers for Windows, AIX, Solaris, and other platforms are available on [netxms.org](https://www.netxms.org/download/).
 
 ### Docker
 
@@ -156,67 +142,6 @@ git clone https://github.com/netxms/netxms.git
 cd netxms/contrib/docker
 docker-compose up -d
 ```
-
-
-## 📚 Documentation 
-
-* **[Administration Guide](https://www.netxms.org/documentation/adminguide/)** - Complete setup and configuration guide
-* **[Change Log](https://github.com/netxms/changelog/blob/master/ChangeLog.md)** - Latest changes and updates
-* **[NetXMS Scripting Language (NXSL)](https://www.netxms.org/documentation/nxsl-latest/)** - Scripting reference
-* **[Data Dictionary](https://www.netxms.org/documentation/datadictionary-latest/)** - Complete data reference
-* **[Java API Documentation](https://www.netxms.org/documentation/javadoc/latest/)** - NxShell and Java API reference
-* **[YouTube Channel](https://www.youtube.com/@netxms)** - Video tutorials and webinars
-
-
-## 🆘 Support
-
-### Community Support
-
-* **[Forum](https://www.netxms.org/forum/index.php)** - Community discussions and help
-* **[Telegram](https://telegram.me/netxms)** - Real-time chat support
-* **[Issue Tracker](https://github.com/netxms/netxms/issues)** - Bug reports and feature requests
-
-### Commercial Support
-
-* **[Raden Solutions](https://netxms.com/commercial-support)** - Professional support and services
-
-## 🤝 Contributing
-
-We welcome contributions from the community! NetXMS follows an **issue-first** approach and values privacy, performance, and modular architecture.
-
-**Before contributing, please read our guides:**
-
-* **[CONTRIBUTING.md](CONTRIBUTING.md)** - Complete developer contribution guide
-* **[DESIGN.md](DESIGN.md)** - Design contribution guidelines and resources
-
-**CONTRIBUTING.md includes:**
-* Project vision and core values
-* Development priorities and guidelines
-* Required issue-first workflow
-* Code standards and testing requirements
-* Development setup instructions
-
-**DESIGN.md includes:**
-* UI/UX design guidelines and resources
-* Core UX Issues Needing Attention
-* Target Audience 
-
-Quick links for contributors:
-* **[Report bugs](https://github.com/netxms/netxms/issues)** - Use our issue tracker
-* **[Join discussions](https://www.netxms.org/forum/index.php)** - Community forum
-* **[Get help](https://telegram.me/netxms)** - Real-time chat support
-
-## 📄 License 
-
-Most parts of NetXMS are licensed under the GNU General Public License, with some exclusions. See [COPYING](COPYING) for detailed information.
-
----
-
-<div align="center">
-
-**[Website](https://www.netxms.org) • [Download](https://www.netxms.org/download/) • [Documentation](https://www.netxms.org/documentation/) • [Demo](https://www.youtube.com/watch?v=QhHznyOXEFk)**
-
-Made with ❤️ by the NetXMS community
 
 </div>
 
